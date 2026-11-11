@@ -9,7 +9,7 @@ Exito Playbox Management System adalah aplikasi berbasis web menggunakan Python 
   - Memilih paket billing dan memproses pembayaran transaksi.
   - Memantau dasbor status ketersediaan unit konsol secara langsung.
 - **Pemilik Rental (Owner):**
-  - Mengakses rekapitulasi laporan pendapatan harian dan bulanan.
+  - Mengakses rekapitulasi laporan pendapatan harian dan bulanan secara langsung melalui layar aplikasi.
   - Meninjau riwayat transaksi penyewaan lengkap dengan pembatasan hak akses (*role-based restriction*).
 
 ## 3. Fitur per Prioritas (Must & Should Have)
@@ -26,14 +26,14 @@ Exito Playbox Management System adalah aplikasi berbasis web menggunakan Python 
   - **Given** pengguna berada di halaman dasbor utama, **When** halaman dimuat, **Then** sistem menampilkan seluruh unit konsol beserta indikator warna statusnya (Hijau = Kosong, Merah = Terpakai).
 
 ### Fitur 3: Rekapitulasi Laporan Pendapatan (Prioritas: Must)
-- **Deskripsi:** Menyajikan laporan keuangan harian dan bulanan secara otomatis tanpa kalkulasi manual.
+- **Deskripsi:** Menyajikan laporan keuangan harian dan bulanan secara otomatis tanpa kalkulasi manual (tampilan langsung di layar tanpa ekspor PDF/Excel untuk rilis awal).
 - **Kriteria Penerimaan (Given-When-Then):**
   - **Given** pemilik membuka halaman Laporan, **When** memilih filter tanggal harian, **Then** sistem menampilkan total pendapatan, jumlah transaksi, dan ringkasan penyewaan per unit.
 
 ### Fitur 4: Perhitungan Denda / Kelebihan Waktu Otomatis (Prioritas: Should)
-- **Deskripsi:** Menghitung biaya tambahan secara otomatis apabila durasi sewa melebihi batas paket (dengan aturan pembulatan kelebihan waktu per 30 menit).
+- **Deskripsi:** Menghitung biaya tambahan secara otomatis apabila durasi sewa melebihi batas paket (dengan aturan pembulatan kelebihan waktu dihitung pasti per kelipatan 30 menit sesuai kesepakatan klien).
 - **Kriteria Penerimaan (Given-When-Then):**
-  - **Given** masa sewa telah melewati batas durasi paket, **When** transaksi dihentikan, **Then** sistem mendeteksi kelebihan waktu, menerapkan tarif denda proporsional, dan menambahkannya ke total tagihan.
+  - **Given** masa sewa telah melewati batas durasi paket, **When** transaksi dihentikan, **Then** sistem mendeteksi kelebihan waktu, menerapkan tarif denda proporsional per 30 menit, dan menambahkannya ke total tagihan.
 
 ### Fitur 5: Validasi Input & Riwayat Transaksi (Prioritas: Should)
 - **Deskripsi:** Memastikan kelengkapan data masukan kasir dan menyimpan riwayat transaksi secara aman.
@@ -48,10 +48,6 @@ ama_unit, jenis_konsol (PS3/PS4/PS5), status_unit (Tersedia/Terpakai/Maintenance
 ama_lengkap, username, password_hash, ole (Admin/Kasir).
 
 ## 5. Di Luar Lingkup (Won't Have & Could Have)
-- **Integrasi Payment Gateway Otomatis (Won't Have):** Pembayaran digital otomatis melalui API pihak ketiga ditiadakan untuk rilis saat ini; pembayaran dilakukan secara tunai atau transfer manual di tempat.
+- **Integrasi Payment Gateway Otomatis (Won't Have):** Pembayaran digital otomatis melalui API pihak ketiga ditiadakan; pembayaran dilakukan secara tunai atau transfer manual di tempat.
 - **Pelacakan GPS Fisik Konsol (Won't Have):** Fitur pelacakan perangkat secara langsung tidak disertakan karena unit dioperasikan di dalam area rental.
-- **Filter Jenis Konsol & Manajemen Aksesori (Could Have):** Fitur lanjutan penyaringan unit dan pencatatan inventaris aksesori diposisikan sebagai opsi tambahan bila waktu pengembangan mencukupi.
-
-## 6. Pertanyaan Terbuka untuk Klien
-- Apakah aturan pembulatan denda kelebihan waktu disepakati dihitung per 30 menit atau per 1 jam penuh?
-- Apakah laporan keuangan bulanan memerlukan fitur ekspor langsung ke format berkas Excel atau PDF?
+- **Ekspor Dokumen Laporan PDF/Excel (Won't Have):** Berdasarkan konfirmasi klien, fitur unduh laporan ke format berkas eksternal ditunda dan digantikan dengan tampilan ringkasan langsung di layar aplikasi.
