@@ -1,0 +1,18 @@
+graph LR
+    subgraph Exito Playbox System
+        UC01[Catat Transaksi Sewa]
+        UC02[Kelola Penghentian dan Denda]
+        UC03[Pantau Ketersediaan Unit]
+        UC04[Lihat Laporan Pendapatan]
+        UC05[Telusuri Riwayat Transaksi]
+    end
+
+    Kasir["Kasir / Operator"] --- UC01
+    Kasir["Kasir / Operator"] --- UC02
+    Kasir["Kasir / Operator"] --- UC03
+
+    Owner["Pemilik Rental (Owner)"] --- UC04
+    Owner["Pemilik Rental (Owner)"] --- UC05
+
+    UC01 -.->|"include"| UC03
+    UC02 -.->|"include"| UC01
