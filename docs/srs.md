@@ -1,7 +1,7 @@
 # Software Requirements Specification (SRS) - Sistem Rental PlayStation
 
 ## 1. Pendahuluan
-Dokumen Spesifikasi Kebutuhan Perangkat Lunak ini mendeskripsikan fungsionalitas sistem manajemen rental konsol Exito Playbox.
+Dokumen Spesifikasi Kebutuhan Perangkat Lunak ini mendeskripsikan fungsionalitas dan parameter kualitas sistem manajemen rental konsol Exito Playbox.
 
 ## 2. Deskripsi Umum
 Sistem ini dirancang untuk mengelola data unit konsol, transaksi penyewaan berbasis waktu, manajemen anggota, serta rekapitulasi laporan pendapatan kasir dan pemilik.
@@ -20,3 +20,12 @@ Sistem ini dirancang untuk mengelola data unit konsol, transaksi penyewaan berba
 | KF-08 | Sistem harus memvalidasi input data kasir sebelum transaksi sewa baru disimpan ke database. | US-01 | Tinggi | Ya | Muncul peringatan jika ada kolom data wajib yang kosong. |
 | KF-09 | Sistem harus mencatat pencatatan data inventaris aksesori pendukung seperti stik dan kabel. | Analisis | Sedang | Ya | Stok aksesori tambahan tercatat dan terpantau kondisinya. |
 | KF-10 | Sistem harus menyediakan fitur pencarian data riwayat transaksi berdasarkan tanggal atau nama penyewa. | Analisis | Rendah | Ya | Data transaksi lama dapat ditemukan dengan cepat melalui kolom pencarian. |
+
+## 4. Kebutuhan Non-Fungsional
+
+| ID | Kategori | Pernyataan Terukur | Sumber |
+|----|----------|--------------------|--------|
+| KNF-01 | Kinerja | Halaman dasbor status unit harus terbuka dalam waktu kurang dari atau sama dengan 2 detik pada perangkat komputer kasir standar. | Catatan Wawancara No. 1 & Analisis |
+| KNF-02 | Keandalan | Sistem harus melakukan pencadangan (*backup*) basis data otomatis minimal sekali setiap hari untuk mencegah kehilangan data transaksi saat terjadi kendala teknis. | Catatan Wawancara Analisis (Mitigasi Risiko) |
+| KNF-03 | Keamanan | Akses ke menu rekapitulasi laporan keuangan dan pengaturan sistem dibatasi hanya untuk akun dengan peran pemilik (*owner*). | Catatan Wawancara No. 3 |
+| KNF-04 | Kegunaan (*Usability*) | Antarmuka kasir harus dapat dioperasikan dengan mudah dan dipahami oleh pegawai baru dalam waktu pelatihan maksimal 15 menit tanpa panduan teknis yang rumit. | Catatan Wawancara Analisis (Karakteristik Pengguna) |
