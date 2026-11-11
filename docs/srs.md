@@ -19,7 +19,7 @@ Sistem ini dirancang untuk mengelola data unit konsol, transaksi penyewaan berba
 | KF-07 | Sistem harus menyimpan data riwayat transaksi sewa lengkap dengan identitas penyewa. | US-03 | Should | Ya | Data transaksi tersimpan di database dan dapat ditelusuri kembali. |
 | KF-08 | Sistem harus memvalidasi input data kasir sebelum transaksi sewa baru disimpan ke database. | US-01 | Should | Ya | Muncul peringatan jika ada kolom data wajib yang kosong. |
 | KF-09 | Sistem harus mencatat pencatatan data inventaris aksesori pendukung seperti stik dan kabel. | Analisis | Could | Ya | Stok aksesori tambahan tercatat dan terpantau kondisinya. |
-| KF-10 | Sistem harus menyediakan fitur pencarian data riwayat transaksi berdasarkan tanggal atau nama penyewa. | Analisis | Could | Ya | Data transaksi lama dapat ditemukan dengan cepat melalui kolom pencarian. |
+| KF-10 | Sistem harus menyediakan fitur pencarian data riwayat transaksi berdasarkan tanggal atau nama penyewa. | Analisis | Rendah | Ya | Data transaksi lama dapat ditemukan dengan cepat melalui kolom pencarian. |
 
 ## 4. Kebutuhan Non-Fungsional
 
@@ -39,3 +39,12 @@ Sistem ini dirancang untuk mengelola data unit konsol, transaksi penyewaan berba
 ### Daftar Fitur yang Ditunda / Tidak Dikerjakan (*Won't Have*):
 - **W-01 Integrasi *Payment Gateway* Otomatis:** Pembayaran digital otomatis (QRIS dinamis / *e-wallet API*) ditiadakan karena keterbatasan waktu pengembangan hingga Minggu 16; transaksi pembayaran difokuskan secara tunai atau transfer manual langsung di tempat.
 - **W-02 Pelacakan GPS Fisik Konsol:** Fitur pelacakan perangkat secara langsung (*real-time GPS tracking*) tidak dikerjakan karena konsol rental digunakan di dalam area tempat usaha (kecuali sewa khusus dengan jaminan identitas manual).
+
+## 6. Matriks Keterlacakan (Traceability Matrix)
+
+| User Story / Sumber | Kebutuhan Turunan (KF / KNF) | Keterangan / Status |
+|---------------------|-------------------------------|---------------------|
+| **US-01** (Pencatatan Transaksi Sewa Unit) | KF-01, KF-02, KF-03, KF-08 | Terkait langsung dengan siklus hidup transaksi sewa dan validasi data kasir. |
+| **US-02** (Monitoring Ketersediaan Unit) | KF-04, KF-05, KNF-01 | Menjamin visibilitas real-time status konsol dan kecepatan akses dasbor. |
+| **US-03** (Rekapitulasi Laporan Pendapatan) | KF-06, KF-07, KNF-03 | Menyediakan data laporan keuangan bagi pemilik dengan kontrol keamanan akses. |
+| **Catatan Analisis / Mitigasi** | KNF-02, KNF-04, KF-09, KF-10 | Kebutuhan pendukung operasional, pencadangan data, kemudahan penggunaan, dan inventaris. |
