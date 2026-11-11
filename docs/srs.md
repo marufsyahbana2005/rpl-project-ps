@@ -48,3 +48,9 @@ Sistem ini dirancang untuk mengelola data unit konsol, transaksi penyewaan berba
 | **US-02** (Monitoring Ketersediaan Unit) | KF-04, KF-05, KNF-01 | Menjamin visibilitas real-time status konsol dan kecepatan akses dasbor. |
 | **US-03** (Rekapitulasi Laporan Pendapatan) | KF-06, KF-07, KNF-03 | Menyediakan data laporan keuangan bagi pemilik dengan kontrol keamanan akses. |
 | **Catatan Analisis / Mitigasi** | KNF-02, KNF-04, KF-09, KF-10 | Kebutuhan pendukung operasional, pencadangan data, kemudahan penggunaan, dan inventaris. |
+
+## 7. Riwayat Konfirmasi Klien
+
+| Tanggal Konfirmasi | Ringkasan Tanggapan / Masukan Klien | Perubahan yang Dilakukan pada SRS / PRD | Status Asumsi |
+|--------------------|-------------------------------------|------------------------------------------|---------------|
+| 11 November 2026   | Klien menyetujui seluruh fitur utama (pencatatan sewa, dasbor status, dan laporan omset). Klien meminta denda kelebihan waktu dihitung per 30 menit. Klien tidak memerlukan ekspor PDF untuk saat ini, cukup lihat di layar. | Memperbarui ketentuan denda pada PRD dan SRS; mengubah asumsi terkait ekspor laporan menjadi *Won't Have*. | Asumsi denda terjawab (menjadi pasti). |
