@@ -1,0 +1,18 @@
+Set-Content -Path docs\uml\activity-02-kelola-denda.mmd -Value @"
+flowchart TD
+    Start([Mulai]) --> A[Kasir memilih transaksi sewa yang ingin dihentikan]
+    A --> B[Sistem menghitung durasi total pemakaian dan membandingkannya dengan paket awal]
+    B --> C{Apakah durasi sewa melebihi batas paket?}
+    
+    C -- Ya --> D[Sistem menerapkan tarif denda proporsional per 30 menit]
+    D --> E[Sistem menambah biaya denda ke rincian total tagihan]
+    
+    C -- Tidak --> F[Sistem menetapkan total biaya tanpa tambahan denda]
+    
+    E --> G[Sistem menghentikan timer dan menghitung total biaya sewa akhir]
+    F --> G
+    
+    G --> H[Kasir mengonfirmasi penyelesaian transaksi]
+    H --> I[Sistem membebaskan unit konsol kembali ke status Tersedia]
+    I --> End([Selesai])
+"@

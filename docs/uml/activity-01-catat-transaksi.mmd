@@ -1,0 +1,17 @@
+flowchart TD
+    Start([Mulai]) --> A[Kasir membuka halaman pencatatan transaksi]
+    A --> B[Kasir memilih unit konsol dan paket durasi]
+    B --> C{Apakah data input lengkap?}
+    
+    C -- Tidak --> D[Sistem menampilkan pesan galat validasi]
+    D --> B
+    
+    C -- Ya --> E{Apakah status konsol Tersedia?}
+    E -- Tidak --> F[Sistem menolak dan menampilkan status Terpakai/Maintenance]
+    F --> B
+    
+    E -- Ya --> G[Kasir mengklik tombol Mulai Sewa]
+    G --> H[Sistem mencatat waktu mulai transaksi]
+    H --> I[Sistem mengubah status unit konsol menjadi Terpakai]
+    I --> J[Sistem mengaktifkan timer durasi sewa]
+    J --> End([Selesai])

@@ -1,0 +1,14 @@
+Set-Content -Path docs\uml\activity-03-pantau-dasbor.mmd -Value @"
+flowchart TD
+    Start([Mulai]) --> A[Kasir membuka halaman dasbor utama aplikasi]
+    A --> B[Sistem mengambil data status terkini dari database melalui HTTP polling]
+    B --> C{Apakah kasir menggunakan fitur filter jenis konsol?}
+    
+    C -- Ya --> D[Kasir memilih jenis konsol tertentu PS3, PS4, atau PS5]
+    D --> E[Sistem memfilter dan menampilkan daftar unit sesuai jenis yang dipilih]
+    
+    C -- Tidak --> F[Sistem menampilkan daftar seluruh unit konsol lengkap dengan indikator warna status]
+    
+    E --> End([Selesai])
+    F --> End
+"@
