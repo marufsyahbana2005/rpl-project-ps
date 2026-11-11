@@ -1,7 +1,7 @@
 # Product Requirements Document (PRD) — Sistem Manajemen Rental PlayStation (Exito Playbox)
 
 ## 1. Ringkasan Produk dan Tujuan
-Exito Playbox Management System adalah aplikasi berbasis web yang dirancang untuk mengotomatisasi pencatatan transaksi sewa konsol, pemantauan status unit secara real-time, dan rekapitulasi laporan pendapatan harian. Tujuan utama produk ini adalah memangkas kesalahan pencatatan manual, mempercepat proses layanan kasir, serta memberikan transparansi finansial bagi pemilik rental.
+Exito Playbox Management System adalah aplikasi berbasis web menggunakan Python Flask dan SQLite yang dirancang untuk mengotomatisasi pencatatan transaksi sewa konsol, pemantauan status unit secara real-time via *polling* berkala, dan rekapitulasi laporan pendapatan harian. Tujuan utama produk ini adalah memangkas kesalahan pencatatan manual, mempercepat proses layanan kasir, serta memberikan transparansi finansial bagi pemilik rental.
 
 ## 2. Pengguna dan Peran
 - **Kasir / Operator Rental:**
@@ -10,7 +10,7 @@ Exito Playbox Management System adalah aplikasi berbasis web yang dirancang untu
   - Memantau dasbor status ketersediaan unit konsol secara langsung.
 - **Pemilik Rental (Owner):**
   - Mengakses rekapitulasi laporan pendapatan harian dan bulanan.
-  - Meninjau riwayat transaksi penyewaan lengkap.
+  - Meninjau riwayat transaksi penyewaan lengkap dengan pembatasan hak akses (*role-based restriction*).
 
 ## 3. Fitur per Prioritas (Must & Should Have)
 
@@ -21,7 +21,7 @@ Exito Playbox Management System adalah aplikasi berbasis web yang dirancang untu
   - **Given** transaksi sewa sedang berjalan, **When** waktu habis atau penghentian diproses, **Then** sistem menghitung total biaya sesuai tarif dan membebaskan status konsol.
 
 ### Fitur 2: Dasbor Monitoring Ketersediaan Unit (Prioritas: Must)
-- **Deskripsi:** Menampilkan kondisi seluruh unit konsol (PS3, PS4, PS5) dalam tampilan visual yang mudah dibaca.
+- **Deskripsi:** Menampilkan kondisi seluruh unit konsol (PS3, PS4, PS5) dalam tampilan visual yang diperbarui secara berkala (*HTTP polling*).
 - **Kriteria Penerimaan (Given-When-Then):**
   - **Given** pengguna berada di halaman dasbor utama, **When** halaman dimuat, **Then** sistem menampilkan seluruh unit konsol beserta indikator warna statusnya (Hijau = Kosong, Merah = Terpakai).
 
@@ -31,9 +31,9 @@ Exito Playbox Management System adalah aplikasi berbasis web yang dirancang untu
   - **Given** pemilik membuka halaman Laporan, **When** memilih filter tanggal harian, **Then** sistem menampilkan total pendapatan, jumlah transaksi, dan ringkasan penyewaan per unit.
 
 ### Fitur 4: Perhitungan Denda / Kelebihan Waktu Otomatis (Prioritas: Should)
-- **Deskripsi:** Menghitung biaya tambahan secara otomatis apabila durasi sewa melebihi batas paket.
+- **Deskripsi:** Menghitung biaya tambahan secara otomatis apabila durasi sewa melebihi batas paket (dengan aturan pembulatan kelebihan waktu per 30 menit).
 - **Kriteria Penerimaan (Given-When-Then):**
-  - **Given** masa sewa telah melewati batas durasi paket, **When** transaksi dihentikan, **Then** sistem mendeteksi kelebihan waktu dan menambahkan rincian biaya denda ke total tagihan.
+  - **Given** masa sewa telah melewati batas durasi paket, **When** transaksi dihentikan, **Then** sistem mendeteksi kelebihan waktu, menerapkan tarif denda proporsional, dan menambahkannya ke total tagihan.
 
 ### Fitur 5: Validasi Input & Riwayat Transaksi (Prioritas: Should)
 - **Deskripsi:** Memastikan kelengkapan data masukan kasir dan menyimpan riwayat transaksi secara aman.
@@ -53,5 +53,5 @@ ama_lengkap, username, password_hash, ole (Admin/Kasir).
 - **Filter Jenis Konsol & Manajemen Aksesori (Could Have):** Fitur lanjutan penyaringan unit dan pencatatan inventaris aksesori diposisikan sebagai opsi tambahan bila waktu pengembangan mencukupi.
 
 ## 6. Pertanyaan Terbuka untuk Klien
-- Apakah ada batasan nominal uang kembalian atau sistem deposit tertentu yang perlu dicatat saat pelanggan menyewa dengan sistem buka tab (*open bill*)?
-- Apakah laporan bulanan memerlukan fitur ekspor langsung ke format berkas Excel atau PDF?
+- Apakah aturan pembulatan denda kelebihan waktu disepakati dihitung per 30 menit atau per 1 jam penuh?
+- Apakah laporan keuangan bulanan memerlukan fitur ekspor langsung ke format berkas Excel atau PDF?
