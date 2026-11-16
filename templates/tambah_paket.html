@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Tambah Paket Sewa{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2 style="margin-bottom: 0.5rem;">Tambah Paket Sewa Baru</h2>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">
+        Konfigurasi paket tarif durasi sewa PlayStation baru
+    </p>
+
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul style="margin-left: 1.25rem;">
+                {% for err in errors %}
+                    <li>{{ err }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form action="{{ url_for('tambah_paket') }}" method="POST">
+        <div style="margin-bottom: 1.25rem;">
+            <label for="nama_paket" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">
+                Nama Paket (*Wajib):
+            </label>
+            <input type="text" id="nama_paket" name="nama_paket" value="{{ data.get('nama_paket', '') }}"
+                   placeholder="Contoh: Paket PS4 2 Jam Hemat"
+                   style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;"
+                   required>
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+            <label for="jenis_konsol" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">
+                Tipe Mesin Konsol:
+            </label>
+            <select id="jenis_konsol" name="jenis_konsol"
+                    style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;">
+                <option value="PS4" {% if data.get('jenis_konsol') == 'PS4' %}selected{% endif %}>PlayStation 4 (PS4)</option>
+                <option value="PS5" {% if data.get('jenis_konsol') == 'PS5' %}selected{% endif %}>PlayStation 5 (PS5)</option>
+                <option value="PS3" {% if data.get('jenis_konsol') == 'PS3' %}selected{% endif %}>PlayStation 3 (PS3)</option>
+            </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div>
+                <label for="durasi_menit" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">
+                    Durasi (Menit):
+                </label>
+                <input type="number" id="durasi_menit" name="durasi_menit" value="{{ data.get('durasi_menit', '') }}"
+                       placeholder="Misal: 60, 120" min="1"
+                       style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;"
+                       required>
+            </div>
+            <div>
+                <label for="harga" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">
+                    Tarif Sewa (Rp):
+                </label>
+                <input type="number" id="harga" name="harga" value="{{ data.get('harga', '') }}"
+                       placeholder="Misal: 12000" min="0"
+                       style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;"
+                       required>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.9rem; cursor: pointer;">
+                <input type="checkbox" name="is_active" value="1" {% if data.get('is_active', 1) == 1 %}checked{% endif %}>
+                Status Paket Aktif (Dapat dipilih kasir)
+            </label>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+            <button type="submit" class="btn btn-primary">[+] Simpan Paket</button>
+            <a href="{{ url_for('daftar_paket') }}" class="btn btn-secondary">Batal</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
