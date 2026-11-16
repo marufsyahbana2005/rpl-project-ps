@@ -1,0 +1,37 @@
+flowchart LR
+    %% Peta Navigasi Antarmuka Sistem Exito Playbox
+    
+    H01["[wf-01] Halaman Login<br/><i>(Semua Peran)</i>"]
+    H02["[wf-02] Dasbor Monitoring / Beranda<br/><i>(Kasir & Pemilik)</i>"]
+    H03["[wf-03] Form Buka Sewa<br/><i>(Kasir)</i>"]
+    H04["[wf-04] Selesai Sewa & Denda<br/><i>(Kasir)</i>"]
+    H05["[wf-05] Kelola Master Unit & Paket<br/><b>(Khusus Pemilik)</b>"]
+    H06["[wf-06] Riwayat Transaksi<br/><i>(Kasir & Pemilik)</i>"]
+    H07["[wf-07] Laporan Pendapatan<br/><b>(Khusus Pemilik)</b>"]
+
+    %% Alur dari Login
+    H01 -->|"Autentikasi Berhasil"| H02
+
+    %% Navigasi dari Beranda (Maksimal 1 Klik)
+    H02 -->|"Klik Tombol 'Mulai Sewa'"| H03
+    H02 -->|"Klik Tombol 'Selesaikan'"| H04
+    H02 -->|"Menu Navigasi: Riwayat"| H06
+    H02 -.->|"Menu Navigasi (Role Owner)"| H05
+    H02 -.->|"Menu Navigasi (Role Owner)"| H07
+    H02 -->|"Tombol 'Keluar' (Logout)"| H01
+
+    %% Alur Kembali ke Beranda
+    H03 -->|"Simpan / Batal"| H02
+    H04 -->|"Konfirmasi Bayar / Batalkan"| H02
+    H04 -->|"Lihat Nota di Riwayat"| H06
+    H05 -->|"Menu: Beranda / Kembali"| H02
+    H06 -->|"Menu: Beranda / Kembali"| H02
+    H07 -->|"Menu: Beranda / Kembali"| H02
+
+    %% Styling
+    classDef default fill:#F8FAFC,stroke:#334155,stroke-width:1.5px,color:#0F172A;
+    classDef ownerOnly fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#78350F;
+    classDef beranda fill:#DCFCE7,stroke:#16A34A,stroke-width:2.5px,color:#14532D;
+
+    class H02 beranda;
+    class H05,H07 ownerOnly;
