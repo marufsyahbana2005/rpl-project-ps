@@ -4,8 +4,9 @@ Mengelola inisialisasi aplikasi, routing antarmuka, dan penanganan permintaan HT
 """
 
 import os
-from flask import Flask, redirect, url_for, render_template
+from flask import Flask, redirect, url_for, render_template, request, flash
 from models import init_db
+from services import get_all_consoles
 
 # Inisialisasi Aplikasi Flask
 app = Flask(__name__)
@@ -27,13 +28,15 @@ def index():
     return redirect(url_for("daftar_konsol"))
 
 
-# Rute Daftar Konsol (Kerangka Awal Siklus 1)
+# Rute Daftar Konsol (Siklus 2)
 @app.route("/consoles")
 def daftar_konsol():
     """
     Halaman utama daftar unit konsol PlayStation.
+    Seluruh kueri data ditangani oleh lapisan services.
     """
-    return render_template("daftar_konsol.html", consoles=[])
+    consoles = get_all_consoles(app.config["DATABASE_NAME"])
+    return render_template("daftar_konsol.html", consoles=consoles)
 
 
 # Rute Tambah Konsol (Placeholder Kerangka Awal)
