@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Ubah Paket Sewa{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2 style="margin-bottom: 0.5rem;">Ubah Paket Sewa #{{ package['id'] }}</h2>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">
+        Perbarui tarif atau sesuaikan status keaktifan paket
+    </p>
+
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul style="margin-left: 1.25rem;">
+                {% for err in errors %}
+                    <li>{{ err }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form action="{{ url_for('ubah_paket', id=package['id']) }}" method="POST">
+        <div style="margin-bottom: 1.25rem;">
+            <label for="nama_paket" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">
+                Nama Paket (*Wajib):
+            </label>
+            <input type="text" id="nama_paket" name="nama_paket" value="{{ package['nama_paket'] }}"
+                   style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;"
+                   required>
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+            <label for="jenis_konsol" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">
+                Tipe Mesin Konsol:
+            </label>
+            <select id="jenis_konsol" name="jenis_konsol"
+                    style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;">
+                <option value="PS4" {% if package['jenis_konsol'] == 'PS4' %}selected{% endif %}>PlayStation 4 (PS4)</option>
+                <option value="PS5" {% if package['jenis_konsol'] == 'PS5' %}selected{% endif %}>PlayStation 5 (PS5)</option>
+                <option value="PS3" {% if package['jenis_konsol'] == 'PS3' %}selected{% endif %}>PlayStation 3 (PS3)</option>
+            </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div>
+                <label for="durasi_menit" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">
+                    Durasi (Menit):
+                </label>
+                <input type="number" id="durasi_menit" name="durasi_menit" value="{{ package['durasi_menit'] }}" min="1"
+                       style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;"
+                       required>
+            </div>
+            <div>
+                <label for="harga" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">
+                    Tarif Sewa (Rp):
+                </label>
+                <input type="number" id="harga" name="harga" value="{{ package['harga'] }}" min="0"
+                       style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;"
+                       required>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.9rem; cursor: pointer;">
+                <input type="checkbox" name="is_active" value="1" {% if package['is_active'] == 1 %}checked{% endif %}>
+                Status Paket Aktif (Dapat dipilih kasir)
+            </label>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+            <button type="submit" class="btn btn-primary">[v] Simpan Perubahan</button>
+            <a href="{{ url_for('daftar_paket') }}" class="btn btn-secondary">Batal</a>
+        </div>
+    </form>
+
+    <hr style="margin: 2rem 0 1.5rem 0; border: 0; border-top: 1px solid var(--border-color);">
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h4 style="color: var(--danger); font-size: 0.9rem;">Zona Bahaya</h4>
+            <p style="color: var(--text-muted); font-size: 0.8rem;">Paket yang memiliki riwayat transaksi tidak dapat dihapus.</p>
+        </div>
+        <form action="{{ url_for('hapus_paket', id=package['id']) }}" method="POST"
+              onsubmit="return confirm('Apakah Anda yakin ingin menghapus paket sewa ini secara permanen?');">
+            <button type="submit" class="btn btn-danger btn-sm">[X] Hapus Paket</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
