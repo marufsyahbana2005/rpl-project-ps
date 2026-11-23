@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Buka Sesi Sewa Konsol{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 650px; margin: 0 auto;">
+    <h2 style="margin-bottom: 0.5rem;">Buka Sesi Sewa Konsol Baru</h2>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">
+        Catat transaksi sewa konsol pelanggan. Status konsol akan otomatis berubah menjadi <strong>Terpakai</strong>.
+    </p>
+
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul style="margin-left: 1.25rem;">
+                {% for err in errors %}
+                    <li>{{ err }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form action="{{ url_for('buka_sewa') }}" method="POST">
+        <div style="margin-bottom: 1.25rem;">
+            <label for="nama_pelanggan" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">
+                Nama Pelanggan (*Wajib):
+            </label>
+            <input type="text" id="nama_pelanggan" name="nama_pelanggan" value="{{ data.get('nama_pelanggan', '') }}"
+                   placeholder="Contoh: Budi Santoso"
+                   style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;"
+                   required>
+            <small style="color: var(--text-muted); font-size: 0.75rem;">Minimal 2 karakter.</small>
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+            <label for="console_id" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">
+                Pilih Unit Konsol (Induk Consoles):
+            </label>
+            <select id="console_id" name="console_id"
+                    style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;"
+                    required>
+                <option value="">-- Pilih Unit Konsol yang Tersedia --</option>
+                {% for c in available_consoles %}
+                    <option value="{{ c['id'] }}" {% if data.get('console_id')|string == c['id']|string %}selected{% endif %}>
+                        {{ c['kode_konsol'] }} ({{ c['jenis_konsol'] }}) — Siap Disewa
+                    </option>
+                {% endfor %}
+            </select>
+            {% if available_consoles|length == 0 %}
+                <small style="color: var(--danger); font-size: 0.75rem; display: block; margin-top: 0.25rem;">
+                    [!] Saat ini tidak ada unit konsol berstatus 'Tersedia'.
+                </small>
+            {% endif %}
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+            <label for="package_id" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">
+                Pilih Paket Sewa (Induk Packages):
+            </label>
+            <select id="package_id" name="package_id"
+                    style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;"
+                    required>
+                <option value="">-- Pilih Paket Durasi & Tarif Resmi --</option>
+                {% for p in active_packages %}
+                    <option value="{{ p['id'] }}" {% if data.get('package_id')|string == p['id']|string %}selected{% endif %}>
+                        [{{ p['jenis_konsol'] }}] {{ p['nama_paket'] }} — {{ p['durasi_menit'] }} Menit (Rp {{ "{:,}".format(p['harga']).replace(',', '.') }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">
+                Status Pembayaran Awal:
+            </label>
+            <div style="display: flex; gap: 1.5rem; font-size: 0.9rem;">
+                <label style="cursor: pointer;">
+                    <input type="radio" name="status_bayar" value="open_bill" {% if data.get('status_bayar', 'open_bill') == 'open_bill' %}checked{% endif %}>
+                    Open Bill (Bayar Selesai)
+                </label>
+                <label style="cursor: pointer;">
+                    <input type="radio" name="status_bayar" value="lunas" {% if data.get('status_bayar') == 'lunas' %}checked{% endif %}>
+                    Lunas (Bayar di Muka)
+                </label>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+            <button type="submit" class="btn btn-primary" {% if available_consoles|length == 0 %}disabled{% endif %}>
+                [>] Mulai Sewa & Ubah Status Konsol
+            </button>
+            <a href="{{ url_for('daftar_sewa') }}" class="btn btn-secondary">Batal</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

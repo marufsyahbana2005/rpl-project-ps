@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Daftar Transaksi Sewa{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 1.5rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+        <div>
+            <h2>Daftar Transaksi Sewa PlayStation</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">
+                Data sesi rental konsol aktif dan riwayat nota sewa (JOIN ke Consoles & Packages)
+            </p>
+        </div>
+        <a href="{{ url_for('buka_sewa') }}" class="btn btn-primary">[+] Buka Sewa Baru</a>
+    </div>
+
+    <!-- Form Pencarian dan Penyaringan (Sesi 2 / Langkah 9 & 10) -->
+    <form method="GET" action="{{ url_for('daftar_sewa') }}" style="display: flex; gap: 0.75rem; flex-wrap: wrap; background: #F1F5F9; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+        <div style="flex: 2; min-width: 220px;">
+            <input type="text" name="q" value="{{ query_q or '' }}" placeholder="Cari nama pelanggan, kode unit, atau paket..."
+                   style="width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.85rem;">
+        </div>
+
+        <div style="flex: 1; min-width: 150px;">
+            <select name="status_bayar" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.85rem;">
+                <option value="">-- Semua Status Bayar --</option>
+                <option value="open_bill" {% if filter_status == 'open_bill' %}selected{% endif %}>Open Bill (Berjalan)</option>
+                <option value="lunas" {% if filter_status == 'lunas' %}selected{% endif %}>Lunas (Selesai)</option>
+                <option value="batal" {% if filter_status == 'batal' %}selected{% endif %}>Dibatalkan</option>
+            </select>
+        </div>
+
+        <div style="flex: 1; min-width: 150px;">
+            <select name="jenis_konsol" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.85rem;">
+                <option value="">-- Semua Tipe PS --</option>
+                <option value="PS3" {% if filter_jenis == 'PS3' %}selected{% endif %}>PlayStation 3 (PS3)</option>
+                <option value="PS4" {% if filter_jenis == 'PS4' %}selected{% endif %}>PlayStation 4 (PS4)</option>
+                <option value="PS5" {% if filter_jenis == 'PS5' %}selected{% endif %}>PlayStation 5 (PS5)</option>
+            </select>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn btn-primary btn-sm">Cari</button>
+            {% if query_q or filter_status or filter_jenis %}
+                <a href="{{ url_for('daftar_sewa') }}" class="btn btn-secondary btn-sm">Reset</a>
+            {% endif %}
+        </div>
+    </form>
+
+    <!-- Tabel Data Sewa dengan JOIN -->
+    {% if transactions and transactions|length > 0 %}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No Transaksi</th>
+                        <th>Pelanggan</th>
+                        <th>Unit Konsol</th>
+                        <th>Paket Sewa</th>
+                        <th>Tarif</th>
+                        <th>Waktu Mulai</th>
+                        <th>Status & Denda</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions %}
+                    <tr>
+                        <td><strong>#TRX-{{ "%04d"|format(t['id_transaksi']) }}</strong></td>
+                        <td>
+                            <strong>{{ t['nama_pelanggan'] }}</strong>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Kasir: {{ t['nama_kasir'] }}</div>
+                        </td>
+                        <td>
+                            <span class="badge badge-muted">{{ t['jenis_konsol'] }}</span>
+                            {{ t['kode_konsol'] }}
+                        </td>
+                        <td>{{ t['nama_paket'] }} ({{ t['durasi_menit'] }} mnt)</td>
+                        <td>
+                            <div>Rp {{ "{:,}".format(t['harga_paket']).replace(',', '.') }}</div>
+                            {% if t['biaya_denda'] and t['biaya_denda'] > 0 %}
+                                <div style="font-size: 0.75rem; color: var(--danger-color, #ef4444); font-weight: 600;">
+                                    + Denda Rp {{ "{:,}".format(t['biaya_denda']).replace(',', '.') }}
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td><span style="font-size: 0.85rem;">{{ t['waktu_mulai'] }}</span></td>
+                        <td>
+                            {% if t['status_bayar'] == 'lunas' %}
+                                <span class="badge badge-success">Lunas</span>
+                            {% elif t['status_bayar'] == 'open_bill' %}
+                                <span class="badge badge-warning">Berjalan (Open Bill)</span>
+                            {% else %}
+                                <span class="badge badge-danger">Batal</span>
+                            {% endif %}
+                            {% if t['menit_terlambat'] and t['menit_terlambat'] > 0 %}
+                                <span class="badge badge-danger" style="margin-top: 0.25rem;">+{{ t['menit_terlambat'] }} mnt</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not t['waktu_selesai'] %}
+                                <form action="{{ url_for('selesaikan_sewa', id=t['id_transaksi']) }}" method="POST" style="display: inline;" onsubmit="return confirm('Konfirmasi penyelesaian sesi sewa untuk {{ t['nama_pelanggan'] }}? Unit konsol akan kembali berstatus TERSEDIA.');">
+                                    <button type="submit" class="btn btn-sm btn-outline-success" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;">
+                                        Selesaikan
+                                    </button>
+                                </form>
+                            {% else %}
+                                <span style="font-size: 0.8rem; color: var(--text-muted);">Selesai</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+            {% if query_q or filter_status or filter_jenis %}
+                <p style="font-size: 1.1rem; font-weight: 500;">Tidak ada transaksi sewa yang cocok dengan kriteria pencarian.</p>
+                <p style="font-size: 0.85rem; margin-top: 0.5rem;">Coba sesuaikan kata kunci atau bersihkan filter pencarian.</p>
+            {% else %}
+                <p style="font-size: 1.1rem; font-weight: 500;">Belum ada transaksi sewa yang tercatat</p>
+                <p style="font-size: 0.85rem; margin-top: 0.5rem;">Klik tombol <strong>[+] Buka Sewa Baru</strong> untuk mencatat sesi rental.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
