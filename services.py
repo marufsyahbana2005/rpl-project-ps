@@ -7,7 +7,9 @@ Mencakup:
 3. Modul Entitas Berelasi & Transaksi Atomik (transactions) — Jobsheet 10
 """
 
+import re
 import sqlite3
+from werkzeug.security import generate_password_hash, check_password_hash
 from models import get_db_connection
 
 
@@ -692,5 +694,144 @@ def finish_transaction(transaction_id, force_menit_terlambat=None, db_name=None)
         return True, pesan_sukses, 200
     except sqlite3.IntegrityError as e:
         return False, f"Galat integritas basis data saat menyelesaikan sewa: {e}", 400
+    finally:
+        conn.close()
+
+
+# ============================================================================
+# 4. MODUL ENTITAS PENGGUNA & AUTENTIKASI: USERS (JOBSHEET 11)
+# ============================================================================
+
+def create_user(username, password, role="kasir", is_active=1, db_name=None):
+    """
+    Langkah 3 (Siklus 1): Mendaftarkan akun pengguna baru dengan kata sandi ter-hash.
+    Aturan:
+    - Username: Wajib diisi, minimal 3 karakter, alfanumerik atau garis bawah (_).
+    - Password: Wajib diisi, minimal 6 karakter. Di-hash menggunakan scrypt/pbkdf2 ber-salt.
+    - Role: Wajib salah satu dari ('kasir', 'owner').
+    """
+    errors = []
+    user_clean = (username or "").strip().lower()
+    pass_clean = password or ""
+    role_clean = (role or "kasir").strip().lower()
+
+    if not user_clean:
+        errors.append("Nama pengguna (username) wajib diisi.")
+    elif len(user_clean) < 3:
+        errors.append("Nama pengguna minimal 3 karakter.")
+    elif not re.match(r"^[a-zA-Z0-9_]+$", user_clean):
+        errors.append("Nama pengguna hanya boleh berisi huruf, angka, dan garis bawah (_).")
+
+    if not pass_clean:
+        errors.append("Kata sandi wajib diisi.")
+    elif len(pass_clean) < 6:
+        errors.append("Kata sandi minimal 6 karakter.")
+
+    if role_clean not in ("kasir", "owner"):
+        errors.append("Peran pengguna harus salah satu dari: 'kasir' atau 'owner'.")
+
+    if errors:
+        return False, errors, None
+
+    conn = get_db_connection(db_name)
+    try:
+        # Cek apakah nama pengguna sudah digunakan
+        existing = conn.execute(
+            "SELECT id FROM users WHERE username = ?;", (user_clean,)
+        ).fetchone()
+
+        if existing:
+            errors.append(f"Nama pengguna '{user_clean}' sudah digunakan. Pilih nama lain.")
+            return False, errors, None
+
+        # Hash kata sandi dengan salt aman otomatis (scrypt/pbkdf2:sha256)
+        hashed_password = generate_password_hash(pass_clean)
+
+        cursor = conn.execute(
+            "INSERT INTO users (username, password_hash, role, is_active) VALUES (?, ?, ?, ?);",
+            (user_clean, hashed_password, role_clean, 1 if is_active else 0),
+        )
+        conn.commit()
+        return True, [], cursor.lastrowid
+    except sqlite3.IntegrityError as e:
+        errors.append(f"Pelanggaran integritas basis data pengguna: {e}")
+        return False, errors, None
+    finally:
+        conn.close()
+
+
+def authenticate_user(username, password, db_name=None):
+    """
+    Langkah 4 (Siklus 2): Memverifikasi kredensial login pengguna.
+    Menggunakan pesan galat identik untuk username salah maupun password salah
+    guna menangkal serangan user enumeration.
+    Mengembalikan (user_row, error_message).
+    """
+    user_clean = (username or "").strip().lower()
+    pass_clean = password or ""
+    pesan_galat_netral = "Nama pengguna atau kata sandi salah."
+
+    if not user_clean or not pass_clean:
+        return None, pesan_galat_netral
+
+    conn = get_db_connection(db_name)
+    try:
+        user = conn.execute(
+            "SELECT id, username, password_hash, role, is_active FROM users WHERE username = ?;",
+            (user_clean,),
+        ).fetchone()
+
+        if not user:
+            return None, pesan_galat_netral
+
+        if not user["is_active"]:
+            return None, "Akun pengguna ini sedang dinonaktifkan. Hubungi pemilik sistem."
+
+        # Verifikasi hash kata sandi ber-salt
+        if not check_password_hash(user["password_hash"], pass_clean):
+            return None, pesan_galat_netral
+
+        return user, None
+    finally:
+        conn.close()
+
+
+def get_user_by_id(user_id, db_name=None):
+    """
+    Mengambil data pengguna berdasarkan primary key ID.
+    """
+    conn = get_db_connection(db_name)
+    try:
+        return conn.execute(
+            "SELECT id, username, role, is_active FROM users WHERE id = ?;",
+            (user_id,),
+        ).fetchone()
+    finally:
+        conn.close()
+
+
+def get_user_by_username(username, db_name=None):
+    """
+    Mengambil data pengguna berdasarkan nama pengguna (username).
+    """
+    conn = get_db_connection(db_name)
+    try:
+        return conn.execute(
+            "SELECT id, username, role, is_active FROM users WHERE username = ?;",
+            (username.strip().lower(),),
+        ).fetchone()
+    finally:
+        conn.close()
+
+
+def get_all_users(db_name=None):
+    """
+    Mengambil daftar seluruh pengguna (tanpa menampilkan password_hash).
+    """
+    conn = get_db_connection(db_name)
+    try:
+        return conn.execute(
+            "SELECT id, username, role, is_active FROM users ORDER BY id ASC;"
+        ).fetchall()
     finally:
         conn.close()
