@@ -1,4 +1,4 @@
-﻿# git-push.ps1 — Skrip PowerShell Manajemen Git Cepat
+# git-push.ps1 — Skrip PowerShell Manajemen Git Cepat
 # Repositori: marufsyahbana2005/rpl-project-ps
 
 function Tampilkan-Header {
