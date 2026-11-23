@@ -500,8 +500,8 @@ def _validate_transaction_payload(nama_pelanggan, console_id, package_id, status
     Mengembalikan tuple: (is_valid: bool, errors: list, nama_clean: str, c_id: int|None, p_id: int|None, status_bayar_clean: str)
     """
     errors = []
-    nama_clean = (nama_pelanggan or "").strip()
-    status_bayar_clean = (status_bayar or "open_bill").strip().lower()
+    nama_clean = (str(nama_pelanggan) if nama_pelanggan is not None else "").strip()
+    status_bayar_clean = (str(status_bayar) if status_bayar is not None else "open_bill").strip().lower()
 
     if not nama_clean:
         errors.append("Nama pelanggan wajib diisi.")
