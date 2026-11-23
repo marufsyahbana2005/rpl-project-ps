@@ -75,31 +75,19 @@ Rencana sprint ini diturunkan langsung dari dokumen `docs/product-backlog.md`, P
     - Fitur cetak nota struk digital / ringkasan transaksi ramah printer (*print stylesheet*).
   - [ ] **Ekspor Data Finansial (Owner Feature):**
     - Kemampuan mengunduh laporan pendapatan dalam format CSV untuk pembukuan eksternal.
-  - [ ] **Eksekusi $\ge 20$ Skenario Pengujian Komprehensif:**
-    - Melakukan pengujian integrasi ujung-ke-ujung (*end-to-end*), pengujian batas (*boundary value*), dan *negative testing* pada 20 skenario terinci:
-      1. TC-01: Login kasir valid $\rightarrow$ Masuk ke dasbor.
-      2. TC-02: Login owner valid $\rightarrow$ Masuk ke dasbor lengkap.
-      3. TC-03: Login kata sandi salah $\rightarrow$ Pesan galat netral.
-      4. TC-04: Login 5x salah $\rightarrow$ Percobaan ke-6 HTTP 429 Too Many Requests.
-      5. TC-05: Akses rute `/sewa` tanpa login $\rightarrow$ Redirect ke login.
-      6. TC-06: Akses rute `/packages` oleh kasir $\rightarrow$ HTTP 403 Forbidden.
-      7. TC-07: POST tanpa token CSRF $\rightarrow$ HTTP 400 Bad Request.
-      8. TC-08: POST dengan token CSRF valid $\rightarrow$ Diterima dan diproses.
-      9. TC-09: Tambah unit konsol dengan kode valid $\rightarrow$ Tersimpan berstatus 'tersedia'.
-      10. TC-10: Tambah unit konsol kode duplikat $\rightarrow$ Ditolak validasi server.
-      11. TC-11: Ubah status unit menjadi 'maintenance' oleh owner $\rightarrow$ Status terbarui.
-      12. TC-12: Hapus unit konsol bebas transaksi $\rightarrow$ Terhapus sukses.
-      13. TC-13: Hapus unit konsol yang sedang/pernah disewa $\rightarrow$ Ditolak ramah (FK Restrict).
-      14. TC-14: Buka sewa konsol yang sedang 'terpakai' $\rightarrow$ Tidak muncul di dropdown & ditolak.
-      15. TC-15: Transaksi buka sewa baru $\rightarrow$ Atomik mencatat sewa dan mengubah status unit 'terpakai'.
-      16. TC-16: Selesai sewa tepat waktu $\rightarrow$ Status unit kembali 'tersedia', denda Rp 0.
-      17. TC-17: Selesai sewa terlambat 25 menit $\rightarrow$ Denda tercatat akurat (20 mnt x Rp 1.000).
-      18. TC-18: Pencarian transaksi dengan karakter khusus `%` dan `_` $\rightarrow$ Pencarian literal tanpa wildcard bocor.
-      19. TC-19: Penyaringan ganda transaksi (status bayar + jenis konsol) $\rightarrow$ Hasil akurat.
-      20. TC-20: Akses laporan keuangan oleh owner $\rightarrow$ Menampilkan omset agregat valid.
-  - [ ] **Pelaksanaan User Acceptance Testing (UAT):**
-    - Sesi simulasi langsung bersama pemilik rental (Bpk. Hendra) menggunakan skenario di atas.
-    - Pengisian lembar berita acara penerimaan pengguna (*User Acceptance Form*).
+  - [x] **Eksekusi $\ge 20$ Skenario Pengujian Komprehensif (Jobsheet 13):**
+    - Berhasil merumuskan 22 *test case* komprehensif (8 BVA, 10 uji pelanggaran/negatif, 4 jalur normal) pada `docs/pengujian/test-case.md`.
+    - Mengembangkan 33 fungsi pengujian otomatis pytest (`test_validasi.py`, `test_alur_akses.py`, `test_cacat.py`, `test_pertama.py`) dengan hasil 100% LULUS.
+    - Menutup 3 cacat nyata (`D-01`, `D-02`, `D-03`) melalui siklus TDD merah $\rightarrow$ hijau.
+    - Seluruh Kebutuhan Fungsional teruji otomatis (**Kebutuhan Fungsional tanpa uji = 0**).
+  - [x] **Penyusunan Rencana & Jadwal User Acceptance Testing (UAT):**
+    - Skenario UAT bahasa awam klien (6 skenario operasional) telah disetujui oleh Bpk. Hendra pada `docs/pengujian/rencana-uat.md`.
+    - Jadwal UAT disepakati resmi: **Sabtu, 5 Desember 2026 (Pukul 10.00 – 12.00 WIB)** di gerai rental Exito Playbox.
+    - Peserta UAT: Bpk. Hendra Gunawan (Pemilik), Rian Pratama (Kasir), dan Maruf Syahbana (Fasilitator).
+    - Basis data uji karangan (`rental_uat.db`) dan akun uji (`kasir_siti` & `owner_budi`) telah disiapkan.
+  - [ ] **Pelaksanaan Sesi Lapangan UAT & Penandatanganan Berita Acara:**
+    - Eksekusi simulasi langsung di gerai bersama pemilik dan kasir sesuai rundown pada Minggu 14.
+    - Dokumentasi foto/video pelaksanaan dan penandatanganan lembar serah terima rilis v1.0.
 
 ---
 

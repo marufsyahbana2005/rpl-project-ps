@@ -126,6 +126,9 @@ def update_console(console_id, kode_konsol, jenis_konsol, status, db_name=None):
         if not current:
             return False, ["Unit konsol tidak ditemukan di dalam sistem."], 404
 
+        if current["status"] == "terpakai":
+            return False, ["Unit konsol sedang dalam sesi sewa aktif dan statusnya tidak dapat diubah secara manual."], 400
+
         if not kode_clean:
             errors.append("Kode konsol wajib diisi.")
         elif len(kode_clean) < 4:
@@ -276,7 +279,7 @@ def create_package(nama_paket, jenis_konsol, durasi_menit, harga, is_active=1, d
     conn = get_db_connection(db_name)
     try:
         existing = conn.execute(
-            "SELECT id FROM packages WHERE nama_paket = ?;",
+            "SELECT id FROM packages WHERE LOWER(nama_paket) = LOWER(?);",
             (nama_clean,),
         ).fetchone()
 
@@ -338,7 +341,7 @@ def update_package(package_id, nama_paket, jenis_konsol, durasi_menit, harga, is
             return False, errors, 400
 
         duplicate = conn.execute(
-            "SELECT id FROM packages WHERE nama_paket = ? AND id != ?;",
+            "SELECT id FROM packages WHERE LOWER(nama_paket) = LOWER(?) AND id != ?;",
             (nama_clean, package_id),
         ).fetchone()
 
@@ -500,8 +503,8 @@ def _validate_transaction_payload(nama_pelanggan, console_id, package_id, status
     Mengembalikan tuple: (is_valid: bool, errors: list, nama_clean: str, c_id: int|None, p_id: int|None, status_bayar_clean: str)
     """
     errors = []
-    nama_clean = (nama_pelanggan or "").strip()
-    status_bayar_clean = (status_bayar or "open_bill").strip().lower()
+    nama_clean = (str(nama_pelanggan) if nama_pelanggan is not None else "").strip()
+    status_bayar_clean = (str(status_bayar) if status_bayar is not None else "open_bill").strip().lower()
 
     if not nama_clean:
         errors.append("Nama pelanggan wajib diisi.")
