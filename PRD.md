@@ -1,4 +1,4 @@
-# Product Requirements Document (PRD) — Sistem Manajemen Rental PlayStation (Exito Playbox)
+# Product Requirements Document (PRD) Â— Sistem Manajemen Rental PlayStation (Exito Playbox)
 
 ## 1. Ringkasan Produk dan Tujuan
 Exito Playbox Management System adalah aplikasi berbasis web menggunakan Python Flask dan SQLite yang dirancang untuk mengotomatisasi pencatatan transaksi sewa konsol, pemantauan status unit secara real-time via *polling* berkala, dan rekapitulasi laporan pendapatan harian. Tujuan utama produk ini adalah memangkas kesalahan pencatatan manual, mempercepat proses layanan kasir, serta memberikan transparansi finansial bagi pemilik rental.
@@ -50,4 +50,4 @@ ama_lengkap, username, password_hash, ole (Admin/Kasir).
 ## 5. Di Luar Lingkup (Won't Have & Could Have)
 - **Integrasi Payment Gateway Otomatis (Won't Have):** Pembayaran digital otomatis melalui API pihak ketiga ditiadakan; pembayaran dilakukan secara tunai atau transfer manual di tempat.
 - **Pelacakan GPS Fisik Konsol (Won't Have):** Fitur pelacakan perangkat secara langsung tidak disertakan karena unit dioperasikan di dalam area rental.
-- **Ekspor Dokumen Laporan PDF/Excel (Won't Have):** Berdasarkan konfirmasi klien, fitur unduh laporan ke format berkas eksternal ditunda dan digantikan dengan tampilan ringkasan langsung di layar aplikasi.
+- **Ekspor Dokumen Laporan PDF/Excel (Won't Have):** Berdasarkan konfirmasi klien, fitur unduh laporan ke format berkas eksternal ditunda dan digantikan dengan tampilan ringkasan langsung di layar aplikasi.

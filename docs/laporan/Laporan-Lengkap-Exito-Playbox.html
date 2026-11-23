@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Dokumentasi Lengkap Sistem Exito Playbox (SRS, PRD, & Laporan Akhir)</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm 15mm 20mm 15mm;
+            @bottom-right {
+                content: counter(page);
+            }
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            font-size: 10.5pt;
+            line-height: 1.6;
+            color: #1e293b;
+            background: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .cover-page {
+            page-break-after: always;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 85vh;
+            border: 2px solid #0f172a;
+            padding: 40px 30px;
+            box-sizing: border-box;
+            background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+        }
+
+        .cover-badge {
+            display: inline-block;
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 9pt;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+        }
+
+        .cover-title {
+            font-size: 24pt;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 15px 0;
+            line-height: 1.25;
+            text-transform: uppercase;
+        }
+
+        .cover-subtitle {
+            font-size: 13pt;
+            font-weight: 500;
+            color: #475569;
+            margin: 0 0 40px 0;
+            max-width: 80%;
+            line-height: 1.5;
+        }
+
+        .cover-divider {
+            width: 120px;
+            height: 4px;
+            background: #2563eb;
+            border: none;
+            margin: 0 auto 40px auto;
+        }
+
+        .cover-meta {
+            width: 85%;
+            margin-top: 30px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 25px;
+            text-align: left;
+            font-size: 10pt;
+        }
+
+        .cover-meta table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .cover-meta td {
+            padding: 6px 10px;
+            vertical-align: top;
+        }
+
+        .cover-meta td.label {
+            width: 32%;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .cover-meta td.val {
+            color: #0f172a;
+        }
+
+        .section-break {
+            page-break-before: always;
+            margin-top: 30px;
+        }
+
+        .section-header-box {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 16px 20px;
+            border-radius: 6px;
+            margin: 30px 0 25px 0;
+        }
+
+        .section-header-box h1 {
+            margin: 0;
+            font-size: 16pt;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+        }
+
+        h1.heading-1 {
+            font-size: 16pt;
+            font-weight: 700;
+            color: #0f172a;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 6px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h2.heading-2 {
+            font-size: 13pt;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 22px;
+            margin-bottom: 10px;
+        }
+
+        h3.heading-3 {
+            font-size: 11.5pt;
+            font-weight: 600;
+            color: #0f172a;
+            margin-top: 18px;
+            margin-bottom: 8px;
+        }
+
+        h4.heading-4 {
+            font-size: 10.5pt;
+            font-weight: 600;
+            color: #334155;
+            margin-top: 14px;
+            margin-bottom: 6px;
+        }
+
+        p.doc-p {
+            margin: 0 0 10px 0;
+            text-align: justify;
+        }
+
+        .doc-list {
+            margin: 0 0 12px 0;
+            padding-left: 24px;
+        }
+
+        .doc-list li {
+            margin-bottom: 5px;
+            text-align: justify;
+        }
+
+        .table-container {
+            margin: 15px 0 20px 0;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table.doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9pt;
+            line-height: 1.45;
+        }
+
+        table.doc-table th {
+            background: #1e293b;
+            color: #ffffff;
+            font-weight: 600;
+            text-align: left;
+            padding: 8px 10px;
+            border: 1px solid #334155;
+        }
+
+        table.doc-table td {
+            padding: 7px 10px;
+            border: 1px solid #cbd5e1;
+            vertical-align: top;
+        }
+
+        table.doc-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        pre.code-block {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 8.5pt;
+            line-height: 1.45;
+            overflow-x: auto;
+            margin: 12px 0 16px 0;
+            border: 1px solid #334155;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        code {
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 9pt;
+            border: 1px solid #e2e8f0;
+        }
+
+        pre.code-block code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+            border: none;
+            font-size: inherit;
+        }
+
+        blockquote.doc-quote {
+            margin: 12px 0;
+            padding: 10px 16px;
+            background: #f8fafc;
+            border-left: 4px solid #2563eb;
+            color: #334155;
+            font-style: italic;
+        }
+
+        hr.doc-divider {
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            margin: 25px 0;
+        }
+
+        .doc-link {
+            color: #2563eb;
+            font-weight: 500;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HALAMAN COVER / SAMPUL -->
+    <div class="cover-page">
+        <div class="cover-badge">Dokumentasi Tugas Besar Rekayasa Perangkat Lunak</div>
+        <h1 class="cover-title">SISTEM MANAJEMEN RENTAL PLAYSTATION BERBASIS WEB</h1>
+        <div class="cover-subtitle">Kompilasi Dokumen Spesifikasi Kebutuhan (PRD & SRS), Perancangan Sistem, Implementasi, dan Evaluasi Pengujian Operasional</div>
+        <hr class="cover-divider" />
+        
+        <div class="cover-meta">
+            <table>
+                <tr>
+                    <td class="label">Nama Sistem:</td>
+                    <td class="val"><strong>Exito Playbox Management System (rpl-project-ps)</strong></td>
+                </tr>
+                <tr>
+                    <td class="label">Pengembang / NIM:</td>
+                    <td class="val">Maruf Syahbana (2024xx / Full-Stack & Scrum Master)</td>
+                </tr>
+                <tr>
+                    <td class="label">Mitra Usaha:</td>
+                    <td class="val">Exito Playbox Rental PS (Bpk. Hendra — Kota Sampit)</td>
+                </tr>
+                <tr>
+                    <td class="label">Status Rilis Produksi:</td>
+                    <td class="val"><strong>Versi 1.0.1 (Production Ready)</strong></td>
+                </tr>
+                <tr>
+                    <td class="label">Framework & Runtime:</td>
+                    <td class="val">Python 3.12 / Flask 3.1.3 / SQLite 3 / Waitress WSGI</td>
+                </tr>
+                <tr>
+                    <td class="label">Repositori GitHub:</td>
+                    <td class="val">https://github.com/marufsyahbana2005/rpl-project-ps</td>
+                </tr>
+                <tr>
+                    <td class="label">Tanggal Dokumen:</td>
+                    <td class="val">November 2026</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- BAGIAN 1: PRODUCT REQUIREMENTS DOCUMENT (PRD) -->
+    <div class="section-break">
+        <div class="section-header-box">
+            <h1>BAGIAN I: PRODUCT REQUIREMENTS DOCUMENT (PRD)</h1>
+        </div>
+        <h1 class="heading-1">Product Requirements Document (PRD)  Sistem Manajemen Rental PlayStation (Exito Playbox)</h1>
+<h2 class="heading-2">1. Ringkasan Produk dan Tujuan</h2>
+<p class="doc-p">Exito Playbox Management System adalah aplikasi berbasis web menggunakan Python Flask dan SQLite yang dirancang untuk mengotomatisasi pencatatan transaksi sewa konsol, pemantauan status unit secara real-time via <em>polling</em> berkala, dan rekapitulasi laporan pendapatan harian. Tujuan utama produk ini adalah memangkas kesalahan pencatatan manual, mempercepat proses layanan kasir, serta memberikan transparansi finansial bagi pemilik rental.</p>
+<h2 class="heading-2">2. Pengguna dan Peran</h2>
+<ul class="doc-list">
+<li><strong>Kasir / Operator Rental:</strong></li>
+<li>Memulai dan menghentikan sesi timer sewa konsol.</li>
+<li>Memilih paket billing dan memproses pembayaran transaksi.</li>
+<li>Memantau dasbor status ketersediaan unit konsol secara langsung.</li>
+<li><strong>Pemilik Rental (Owner):</strong></li>
+<li>Mengakses rekapitulasi laporan pendapatan harian dan bulanan secara langsung melalui layar aplikasi.</li>
+<li>Meninjau riwayat transaksi penyewaan lengkap dengan pembatasan hak akses (<em>role-based restriction</em>).</li>
+</ul>
+<h2 class="heading-2">3. Fitur per Prioritas (Must & Should Have)</h2>
+<h3 class="heading-3">Fitur 1: Pencatatan Transaksi & Timer Sewa (Prioritas: Must)</h3>
+<ul class="doc-list">
+<li><strong>Deskripsi:</strong> Sistem mengelola siklus hidup sewa konsol dari mulai hingga selesai secara otomatis.</li>
+<li><strong>Kriteria Penerimaan (Given-When-Then):</strong></li>
+<li><strong>Given</strong> konsol dalam status <em>Tersedia</em>, <strong>When</strong> kasir memilih paket jam dan mengklik <em>Mulai Sewa</em>, <strong>Then</strong> status konsol berubah menjadi <em>Terpakai</em> dan timer durasi berjalan.</li>
+<li><strong>Given</strong> transaksi sewa sedang berjalan, <strong>When</strong> waktu habis atau penghentian diproses, <strong>Then</strong> sistem menghitung total biaya sesuai tarif dan membebaskan status konsol.</li>
+</ul>
+<h3 class="heading-3">Fitur 2: Dasbor Monitoring Ketersediaan Unit (Prioritas: Must)</h3>
+<ul class="doc-list">
+<li><strong>Deskripsi:</strong> Menampilkan kondisi seluruh unit konsol (PS3, PS4, PS5) dalam tampilan visual yang diperbarui secara berkala (<em>HTTP polling</em>).</li>
+<li><strong>Kriteria Penerimaan (Given-When-Then):</strong></li>
+<li><strong>Given</strong> pengguna berada di halaman dasbor utama, <strong>When</strong> halaman dimuat, <strong>Then</strong> sistem menampilkan seluruh unit konsol beserta indikator warna statusnya (Hijau = Kosong, Merah = Terpakai).</li>
+</ul>
+<h3 class="heading-3">Fitur 3: Rekapitulasi Laporan Pendapatan (Prioritas: Must)</h3>
+<ul class="doc-list">
+<li><strong>Deskripsi:</strong> Menyajikan laporan keuangan harian dan bulanan secara otomatis tanpa kalkulasi manual (tampilan langsung di layar tanpa ekspor PDF/Excel untuk rilis awal).</li>
+<li><strong>Kriteria Penerimaan (Given-When-Then):</strong></li>
+<li><strong>Given</strong> pemilik membuka halaman Laporan, <strong>When</strong> memilih filter tanggal harian, <strong>Then</strong> sistem menampilkan total pendapatan, jumlah transaksi, dan ringkasan penyewaan per unit.</li>
+</ul>
+<h3 class="heading-3">Fitur 4: Perhitungan Denda / Kelebihan Waktu Otomatis (Prioritas: Should)</h3>
+<ul class="doc-list">
+<li><strong>Deskripsi:</strong> Menghitung biaya tambahan secara otomatis apabila durasi sewa melebihi batas paket (dengan aturan pembulatan kelebihan waktu dihitung pasti per kelipatan 30 menit sesuai kesepakatan klien).</li>
+<li><strong>Kriteria Penerimaan (Given-When-Then):</strong></li>
+<li><strong>Given</strong> masa sewa telah melewati batas durasi paket, <strong>When</strong> transaksi dihentikan, <strong>Then</strong> sistem mendeteksi kelebihan waktu, menerapkan tarif denda proporsional per 30 menit, dan menambahkannya ke total tagihan.</li>
+</ul>
+<h3 class="heading-3">Fitur 5: Validasi Input & Riwayat Transaksi (Prioritas: Should)</h3>
+<ul class="doc-list">
+<li><strong>Deskripsi:</strong> Memastikan kelengkapan data masukan kasir dan menyimpan riwayat transaksi secara aman.</li>
+<li><strong>Kriteria Penerimaan (Given-When-Then):</strong></li>
+<li><strong>Given</strong> kasir membuat transaksi baru, <strong>When</strong> ada kolom wajib yang kosong lalu disimpan, <strong>Then</strong> sistem menolak penyimpanan dan menampilkan pesan peringatan validasi.</li>
+</ul>
+<h2 class="heading-2">4. Data Awal (Entitas Utama dan Atribut Penting)</h2>
+<ul class="doc-list">
+<li><strong>Unit Konsol:</strong> id_konsol,</li>
+</ul>
+<p class="doc-p">ama_unit, jenis_konsol (PS3/PS4/PS5), status_unit (Tersedia/Terpakai/Maintenance).</p>
+<ul class="doc-list">
+<li><strong>Transaksi:</strong> id_transaksi, id_konsol, waktu_mulai, waktu_selesai, durasi, 	otal_biaya, status_pembayaran.</li>
+<li><strong>Pengguna / Kasir:</strong> id_user,</li>
+</ul>
+<p class="doc-p">ama_lengkap, username, password_hash,</p>
+<p class="doc-p">ole (Admin/Kasir).</p>
+<h2 class="heading-2">5. Di Luar Lingkup (Won't Have & Could Have)</h2>
+<ul class="doc-list">
+<li><strong>Integrasi Payment Gateway Otomatis (Won't Have):</strong> Pembayaran digital otomatis melalui API pihak ketiga ditiadakan; pembayaran dilakukan secara tunai atau transfer manual di tempat.</li>
+<li><strong>Pelacakan GPS Fisik Konsol (Won't Have):</strong> Fitur pelacakan perangkat secara langsung tidak disertakan karena unit dioperasikan di dalam area rental.</li>
+<li><strong>Ekspor Dokumen Laporan PDF/Excel (Won't Have):</strong> Berdasarkan konfirmasi klien, fitur unduh laporan ke format berkas eksternal ditunda dan digantikan dengan tampilan ringkasan langsung di layar aplikasi.</li>
+</ul>
+    </div>
+
+    <!-- BAGIAN 2: SOFTWARE REQUIREMENTS SPECIFICATION (SRS) -->
+    <div class="section-break">
+        <div class="section-header-box">
+            <h1>BAGIAN II: SOFTWARE REQUIREMENTS SPECIFICATION (SRS)</h1>
+        </div>
+        <h1 class="heading-1">Spesifikasi Kebutuhan Perangkat Lunak (SRS) — Exito Playbox</h1>
+<h2 class="heading-2">1. Pendahuluan</h2>
+<p class="doc-p">Dokumen Spesifikasi Kebutuhan Perangkat Lunak ini mendeskripsikan fungsionalitas, parameter kualitas, batasan prioritas, pemodelan UML, riwayat konfirmasi aturan data, serta matriks keterlacakan sistem manajemen rental konsol Exito Playbox.</p>
+<h2 class="heading-2">2. Deskripsi Umum</h2>
+<p class="doc-p">Sistem ini dirancang untuk mengelola data unit konsol, transaksi penyewaan berbasis waktu (<em>timer billing</em>), pencegahan galat input kasir, penanganan denda keterlambatan secara adil, serta rekapitulasi laporan pendapatan pemilik rental (<em>owner</em>).</p>
+<h2 class="heading-2">3. Kebutuhan Fungsional</h2>
+<div class="table-container"><table class="doc-table">
+<thead><tr>
+<th>ID</th>
+<th>Pernyataan Kebutuhan</th>
+<th>Sumber</th>
+<th>Prioritas</th>
+<th>Asumsi?</th>
+<th>Kolom Uji / Test Case Verifikasi</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>KF-01</strong></td>
+<td>Sistem harus mengubah status konsol menjadi terpakai saat transaksi sewa dimulai.</td>
+<td>US-01</td>
+<td><strong>Must</strong></td>
+<td>Tidak</td>
+<td><strong>TC-01, TC-02</strong></td>
+</tr>
+<tr>
+<td><strong>KF-02</strong></td>
+<td>Sistem harus menghitung durasi dan biaya sewa secara otomatis berdasarkan paket jam yang dipilih.</td>
+<td>US-01</td>
+<td><strong>Must</strong></td>
+<td>Tidak</td>
+<td><strong>TC-03, TC-04</strong></td>
+</tr>
+<tr>
+<td><strong>KF-03</strong></td>
+<td>Sistem harus menghentikan timer aktif dan menghitung biaya denda atau kelebihan waktu secara otomatis.</td>
+<td>US-01</td>
+<td><strong>Should</strong></td>
+<td>Tidak</td>
+<td><strong>TC-05, TC-06</strong></td>
+</tr>
+<tr>
+<td><strong>KF-04</strong></td>
+<td>Sistem harus menampilkan dasbor visual status ketersediaan seluruh unit konsol secara real-time.</td>
+<td>US-02</td>
+<td><strong>Must</strong></td>
+<td>Tidak</td>
+<td><strong>TC-07</strong></td>
+</tr>
+<tr>
+<td><strong>KF-05</strong></td>
+<td>Sistem harus menyaring daftar unit konsol berdasarkan jenis konsol (PS3, PS4, PS5).</td>
+<td>US-02</td>
+<td>Could</td>
+<td>Ya</td>
+<td>TC-Filt-01</td>
+</tr>
+<tr>
+<td><strong>KF-06</strong></td>
+<td>Sistem harus merekapitulasi total pendapatan transaksi harian dan bulanan secara otomatis.</td>
+<td>US-03</td>
+<td><strong>Must</strong></td>
+<td>Tidak</td>
+<td><strong>TC-08</strong></td>
+</tr>
+<tr>
+<td><strong>KF-07</strong></td>
+<td>Sistem harus menyimpan data riwayat transaksi sewa lengkap dengan identitas penyewa.</td>
+<td>US-03</td>
+<td><strong>Should</strong></td>
+<td>Ya</td>
+<td><strong>TC-10</strong></td>
+</tr>
+<tr>
+<td><strong>KF-08</strong></td>
+<td>Sistem harus memvalidasi input data kasir sebelum transaksi sewa baru disimpan ke database.</td>
+<td>US-01</td>
+<td><strong>Should</strong></td>
+<td>Ya</td>
+<td><strong>TC-09</strong></td>
+</tr>
+<tr>
+<td><strong>KF-09</strong></td>
+<td>Sistem harus mencatat pencatatan data inventaris aksesori pendukung seperti stik dan kabel.</td>
+<td>Analisis</td>
+<td>Could</td>
+<td>Ya</td>
+<td>TC-Inv-01</td>
+</tr>
+<tr>
+<td><strong>KF-10</strong></td>
+<td>Sistem harus menyediakan fitur pencarian data riwayat transaksi berdasarkan tanggal atau nama penyewa.</td>
+<td>Analisis</td>
+<td>Rendah</td>
+<td>Ya</td>
+<td><strong>TC-10</strong></td>
+</tr>
+</tbody></table></div>
+<h2 class="heading-2">4. Kebutuhan Non-Fungsional</h2>
+<div class="table-container"><table class="doc-table">
+<thead><tr>
+<th>ID</th>
+<th>Kategori</th>
+<th>Pernyataan Terukur</th>
+<th>Sumber</th>
+<th>Prioritas</th>
+<th>Kolom Uji / Test Case</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>KNF-01</strong></td>
+<td>Kinerja</td>
+<td>Halaman dasbor status unit harus terbuka dalam waktu $\le 2$ detik pada perangkat komputer kasir standar.</td>
+<td>Catatan Wawancara No. 1</td>
+<td><strong>Must</strong></td>
+<td><strong>TC-07</strong></td>
+</tr>
+<tr>
+<td><strong>KNF-02</strong></td>
+<td>Keandalan</td>
+<td>Sistem harus melakukan pencadangan (<em>backup</em>) basis data otomatis minimal sekali setiap hari untuk mencegah kehilangan data transaksi.</td>
+<td>Catatan Wawancara Analisis</td>
+<td><strong>Should</strong></td>
+<td>TC-Back-01</td>
+</tr>
+<tr>
+<td><strong>KNF-03</strong></td>
+<td>Keamanan</td>
+<td>Akses ke menu rekapitulasi laporan keuangan dan pengaturan sistem dibatasi hanya untuk akun dengan peran pemilik (<em>owner</em>).</td>
+<td>Catatan Wawancara No. 3</td>
+<td><strong>Must</strong></td>
+<td><strong>TC-11</strong></td>
+</tr>
+<tr>
+<td><strong>KNF-04</strong></td>
+<td>Kegunaan (<em>Usability</em>)</td>
+<td>Antarmuka kasir harus dapat dioperasikan dengan mudah dan dipahami oleh pegawai baru dalam waktu pelatihan maksimal 15 menit.</td>
+<td>Catatan Wawancara Analisis</td>
+<td><strong>Should</strong></td>
+<td>UAT-Usab-01</td>
+</tr>
+</tbody></table></div>
+<h2 class="heading-2">5. Batasan dan Fitur yang Tidak Dikerjakan (Won't Have)</h2>
+<ul class="doc-list">
+<li><strong>W-01 Integrasi Payment Gateway Otomatis:</strong> Pembayaran digital otomatis melalui API pihak ketiga ditiadakan; pembayaran dilakukan secara tunai atau transfer manual di tempat.</li>
+<li><strong>W-02 Pelacakan GPS Fisik Konsol:</strong> Fitur pelacakan perangkat secara langsung tidak disertakan karena unit dioperasikan di dalam area rental.</li>
+<li><strong>W-03 Ekspor Dokumen Laporan PDF/Excel:</strong> Berdasarkan konfirmasi klien, laporan disajikan langsung di layar aplikasi tanpa ekspor berkas eksternal.</li>
+</ul>
+<hr class="doc-divider" />
+<h2 class="heading-2">6. Pemodelan Sistem (UML)</h2>
+<p class="doc-p">Dokumen perancangan pemodelan sistem Exito Playbox tersimpan di dalam direktori <code>docs/uml/</code>:</p>
+<ul class="doc-list">
+<li><strong>Use Case Diagram:</strong> <span class="doc-link"><code>docs/uml/use-case.mmd</code></span></li>
+<li><strong>Skenario Use Case:</strong> <span class="doc-link"><code>docs/uml/skenario-use-case.md</code></span></li>
+<li><strong>Activity Diagram Proses 1 (Catat Transaksi):</strong> <span class="doc-link"><code>docs/uml/activity-01-catat-transaksi.mmd</code></span></li>
+<li><strong>Activity Diagram Proses 2 (Kelola Denda):</strong> <span class="doc-link"><code>docs/uml/activity-02-kelola-denda.mmd</code></span></li>
+<li><strong>Activity Diagram Proses 3 (Pantau Dasbor):</strong> <span class="doc-link"><code>docs/uml/activity-03-pantau-dasbor.mmd</code></span></li>
+</ul>
+<hr class="doc-divider" />
+<h2 class="heading-2">7. Riwayat Konfirmasi Aturan Data (Data Rules Confirmation)</h2>
+<ul class="doc-list">
+<li><strong>Tanggal Konfirmasi:</strong> 16 November 2026</li>
+<li><strong>Metode:</strong> Wawancara terstruktur & verifikasi batasan data kamus data</li>
+<li><strong>Narasumber (Klien):</strong> Pemilik & Kepala Operasional Rental Exito Playbox</li>
+<li><strong>Pewawancara / Analis:</strong> Maruf Syahbana (Product Owner & Developer)</li>
+<li><strong>Tujuan:</strong> Mengonfirmasi batasan integritas data, aturan validasi bisnis, retensi data, dan penanganan kondisi tepi (<em>edge cases</em>) menggunakan bahasa awam yang dipahami pihak operasional.</li>
+</ul>
+<h3 class="heading-3">7.1 Ringkasan Tanya-Jawab Aturan Data (Bahasa Awam)</h3>
+<div class="table-container"><table class="doc-table">
+<thead><tr>
+<th>No</th>
+<th>Topik / Entitas</th>
+<th>Pertanyaan Konfirmasi (Bahasa Awam)</th>
+<th>Jawaban & Arahan Klien</th>
+<th>Implikasi Aturan Basis Data</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>Q1</strong></td>
+<td><strong>Data Pengguna (<code>users</code>)</strong></td>
+<td><em>"Kalau ada kasir yang sudah berhenti bekerja, apakah akunnya boleh dihapus dari aplikasi?"</em></td>
+<td><strong>Tidak boleh dihapus.</strong> Kalau dihapus, laporan transaksi yang pernah dibuat kasir tersebut bisa hilang atau rancu. Cukup dinonaktifkan saja agar tidak bisa login lagi.</td>
+<td>Tambahkan penanda status aktif (<code>is_active</code> bernilai <code>1</code> untuk aktif, <code>0</code> untuk nonaktif). Terapkan integritas <code>ON DELETE RESTRICT</code> pada relasi ke transaksi.</td>
+</tr>
+<tr>
+<td><strong>Q2</strong></td>
+<td><strong>Data Pengguna (<code>users</code>)</strong></td>
+<td><em>"Apakah boleh ada lebih dari satu akun Pemilik (Owner) di sistem?"</em></td>
+<td><strong>Cukup satu akun Owner.</strong> Hanya pemilik utama yang berhak mengubah tarif paket, menambah konsol, dan melihat laporan keuangan penuh.</td>
+<td>Batasan unik pada username dan penegakan logika bisnis satu akun owner aktif.</td>
+</tr>
+<tr>
+<td><strong>Q3</strong></td>
+<td><strong>Unit Konsol (<code>consoles</code>)</strong></td>
+<td><em>"Apakah jumlah konsol bisa minus? Kalau ada konsol yang rusak total, apakah datanya dihapus?"</em></td>
+<td><strong>Konsol adalah fisik nyata, tidak boleh minus.</strong> Kalau rusak, jangan dihapus dari daftar karena ada riwayat sewanya; ubah saja statusnya jadi <em>'maintenance'</em> (perbaikan/rusak).</td>
+<td>Stok/unit terdaftar sebagai entitas unik (<code>kode_konsol UNIQUE</code>). Unit rusak tidak di-hard delete, melainkan status <code>'maintenance'</code>. Relasi <code>ON DELETE RESTRICT</code>.</td>
+</tr>
+<tr>
+<td><strong>Q4</strong></td>
+<td><strong>Unit Konsol (<code>consoles</code>)</strong></td>
+<td><em>"Apakah ada jenis konsol selain PS3, PS4, dan PS5 yang disewakan sekarang atau dalam waktu dekat?"</em></td>
+<td><strong>Saat ini hanya 3 jenis itu.</strong> Belum ada rencana menambah Nintendo Switch atau konsol lain.</td>
+<td>Batasan <code>CHECK (jenis_konsol IN ('PS3', 'PS4', 'PS5'))</code> dipertahankan dan divalidasi ketat.</td>
+</tr>
+<tr>
+<td><strong>Q5</strong></td>
+<td><strong>Unit Konsol (<code>consoles</code>)</strong></td>
+<td><em>"Apakah satu konsol yang sedang main boleh dipakai oleh pelanggan lain di jam yang sama?"</em></td>
+<td><strong>Tidak boleh sama sekali.</strong> Satu unit hanya bisa aktif untuk satu sesi sewa sampai sesi tersebut dihentikan/selesai.</td>
+<td>Validasi sistem: Konsol yang berstatus <code>'terpakai'</code> tidak dapat dipilih untuk transaksi baru sampai status kembali <code>'tersedia'</code>.</td>
+</tr>
+<tr>
+<td><strong>Q6</strong></td>
+<td><strong>Paket Sewa (<code>packages</code>)</strong></td>
+<td><em>"Apakah harga paket sewa boleh berbeda antar-pelanggan (misal ada tawar-menawar)?"</em></td>
+<td><strong>Tidak boleh berbeda antarpelanggan.</strong> Harga sewa wajib seragam dan transparan mengikuti paket resmi agar kasir tidak memanipulasi tarif.</td>
+<td>Tarif sewa dikunci pada tabel master <code>packages</code> (<code>harga >= 0</code>), kasir memilih paket baku tanpa input bebas nilai rupiah sewa.</td>
+</tr>
+<tr>
+<td><strong>Q7</strong></td>
+<td><strong>Paket Sewa (<code>packages</code>)</strong></td>
+<td><em>"Apakah tarif sewa PS3, PS4, dan PS5 sama, atau berbeda?"</em></td>
+<td><strong>Berbeda.</strong> Main PS3 paling murah (misal Rp 8.000/jam), PS4 (Rp 12.000/jam), dan PS5 (Rp 20.000/jam). Jadi tiap paket harus jelas untuk jenis konsol apa.</td>
+<td>Tambahkan atribut <code>jenis_konsol</code> pada tabel <code>packages</code> (<code>CHECK (jenis_konsol IN ('PS3', 'PS4', 'PS5'))</code>) agar paket terikat pada tipe konsol terkait.</td>
+</tr>
+<tr>
+<td><strong>Q8</strong></td>
+<td><strong>Paket Sewa (<code>packages</code>)</strong></td>
+<td><em>"Apakah boleh ada harga paket Rp 0 (gratis)?"</em></td>
+<td><strong>Boleh.</strong> Terkadang kami adakan promo bonus main 1 jam gratis untuk langganan atau pemenang turnamen rental.</td>
+<td>Batasan <code>CHECK (harga >= 0)</code> dipertahankan (bukan <code>harga > 0</code>).</td>
+</tr>
+<tr>
+<td><strong>Q9</strong></td>
+<td><strong>Paket Sewa (<code>packages</code>)</strong></td>
+<td><em>"Jika paket promo lama sudah selesai/kedaluwarsa, apakah boleh dihapus?"</em></td>
+<td><strong>Jangan dihapus.</strong> Kalau dihapus, data nota lama yang pakai paket itu jadi rusak. Cukup disembunyikan/dinonaktifkan agar kasir tidak bisa memilihnya lagi.</td>
+<td>Tambahkan kolom status aktif paket (<code>is_active INTEGER NOT NULL DEFAULT 1</code>). Transaksi lama tetap mengacu pada <code>package_id</code> tanpa error foreign key.</td>
+</tr>
+<tr>
+<td><strong>Q10</strong></td>
+<td><strong>Identitas Pelanggan (<code>transactions</code>)</strong></td>
+<td><em>"Apakah kasir perlu mencatat nama pelanggan saat mulai sewa, atau sistem rental anonim?"</em></td>
+<td><strong>Wajib catat nama panggilan/pelanggan.</strong> Saat rental ramai dengan 8 unit menyala bersamaan, kasir sering lupa siapa yang sedang main di TV tertentu.</td>
+<td>Tambahkan kolom <code>nama_pelanggan TEXT NOT NULL</code> pada tabel <code>transactions</code>.</td>
+</tr>
+<tr>
+<td><strong>Q11</strong></td>
+<td><strong>Pembatalan Transaksi (<code>transactions</code>)</strong></td>
+<td><em>"Bagaimana jika pelanggan baru main 2 menit tiba-tiba mati lampu atau ada kendala mendesak sehingga harus batal main?"</em></td>
+<td><strong>Boleh dibatalkan.</strong> Asalkan pembatalan dilakukan kasir maksimal 5 menit pertama, transaksi dianggap batal dan tidak dihitung ke omset harian.</td>
+<td>Tambahkan status pembayaran/transaksi <code>'batal'</code>: <code>CHECK (status_bayar IN ('lunas', 'open_bill', 'batal'))</code>.</td>
+</tr>
+<tr>
+<td><strong>Q12</strong></td>
+<td><strong>Retensi Data (<code>transactions</code>)</strong></td>
+<td><em>"Apakah riwayat transaksi lama boleh dihapus setelah beberapa bulan? Berapa lama data harus disimpan?"</em></td>
+<td><strong>Tidak boleh dihapus sama sekali (disimpan permanen, minimal 3-5 tahun).</strong> Data ini dibutuhkan untuk audit pendapatan tahunan, evaluasi unit paling laris, dan rekap keuangan pemilik.</td>
+<td>Terapkan kebijakan <em>No Hard Delete</em> untuk data transaksional. Semua relasi ke master menggunakan <code>ON DELETE RESTRICT</code>.</td>
+</tr>
+<tr>
+<td><strong>Q13</strong></td>
+<td><strong>Denda & Toleransi (<code>fines</code>)</strong></td>
+<td><em>"Apakah keterlambatan 1 atau 2 menit langsung kena denda uang?"</em></td>
+<td><strong>Tidak langsung denda. Ada toleransi (grace period) 5 menit.</strong> Pelanggan butuh waktu menyimpan game (<em>save game</em>) dan mengembalikan stik. Lewat dari 5 menit baru kena denda kelipatan per 15 menit.</td>
+<td>Logika hitung denda: jika <code>menit_terlambat <= 5</code>, maka <code>biaya_denda = 0</code>. Jika <code>> 5</code>, dihitung proporsional pembulatan 15 menit.</td>
+</tr>
+<tr>
+<td><strong>Q14</strong></td>
+<td><strong>Denda Toleransi Khusus (<code>fines</code>)</strong></td>
+<td><em>"Apakah denda boleh diikhlaskan/dibebaskan (Rp 0) oleh kasir atau pemilik?"</em></td>
+<td><strong>Boleh Rp 0.</strong> Jika ada kompensasi kendala stik/game macet, denda dapat dihapuskan/dinolkan, namun durasi keterlambatan tetap tercatat untuk arsip.</td>
+<td>Batasan <code>biaya_denda >= 0</code> dan <code>menit_terlambat >= 0</code> dipertahankan.</td>
+</tr>
+</tbody></table></div>
+<hr class="doc-divider" />
+<h2 class="heading-2">8. Matriks Keterlacakan (Traceability Matrix) — Diperbarui dengan Test Case (Langkah 9)</h2>
+<div class="table-container"><table class="doc-table">
+<thead><tr>
+<th>User Story / Sumber</th>
+<th>Kebutuhan Turunan (KF / KNF)</th>
+<th>Use Case Terkait</th>
+<th>Halaman Antarmuka</th>
+<th>Prioritas</th>
+<th>Kolom Uji (Test Case)</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>US-01</strong> (Pencatatan Transaksi Sewa Unit)</td>
+<td><strong>KF-01</strong> (Status Konsol)</td>
+<td>UC-01</td>
+<td><code>wf-02</code> Dasbor Utama<br><code>wf-03</code> Buka Sewa</td>
+<td><strong>Must</strong></td>
+<td><strong>TC-01, TC-02</strong></td>
+</tr>
+<tr>
+<td><strong>US-01</strong> (Kalkulasi Otomatis Durasi & Tarif)</td>
+<td><strong>KF-02</strong> (Biaya Paket Sewa)</td>
+<td>UC-01</td>
+<td><code>wf-03</code> Buka Sewa</td>
+<td><strong>Must</strong></td>
+<td><strong>TC-03, TC-04</strong></td>
+</tr>
+<tr>
+<td><strong>US-01</strong> (Penanganan Keterlambatan Sewa)</td>
+<td><strong>KF-03</strong> (Kalkulasi Denda)</td>
+<td>UC-02</td>
+<td><code>wf-04</code> Selesai Sewa & Denda</td>
+<td><strong>Should</strong></td>
+<td><strong>TC-05, TC-06</strong></td>
+</tr>
+<tr>
+<td><strong>US-01</strong> (Pencegahan Kesalahan Kasir)</td>
+<td><strong>KF-08</strong> (Validasi Input)</td>
+<td>UC-01</td>
+<td><code>wf-03</code> Buka Sewa</td>
+<td><strong>Should</strong></td>
+<td><strong>TC-09</strong></td>
+</tr>
+<tr>
+<td><strong>US-02</strong> (Monitoring Ketersediaan Unit)</td>
+<td><strong>KF-04</strong> (Dasbor Real-time)</td>
+<td>UC-03</td>
+<td><code>wf-02</code> Dasbor Utama</td>
+<td><strong>Must</strong></td>
+<td><strong>TC-07</strong></td>
+</tr>
+<tr>
+<td><strong>US-02</strong> (Kinerja Pemuatan Antarmuka)</td>
+<td><strong>KNF-01</strong> (Respon $\le 2$ Detik)</td>
+<td>UC-03</td>
+<td><code>wf-02</code> Dasbor Utama</td>
+<td><strong>Must</strong></td>
+<td><strong>TC-07</strong></td>
+</tr>
+<tr>
+<td><strong>US-03</strong> (Rekapitulasi Omset Finansial)</td>
+<td><strong>KF-06</strong> (Laporan Omset)</td>
+<td>UC-04</td>
+<td><code>wf-07</code> Laporan Pendapatan</td>
+<td><strong>Must</strong></td>
+<td><strong>TC-08</strong></td>
+</tr>
+<tr>
+<td><strong>US-03</strong> (Penelusuran Audit Transaksi)</td>
+<td><strong>KF-07</strong> (Riwayat Transaksi)</td>
+<td>UC-05</td>
+<td><code>wf-06</code> Riwayat Transaksi</td>
+<td><strong>Should</strong></td>
+<td><strong>TC-10</strong></td>
+</tr>
+<tr>
+<td><strong>US-03</strong> (Keamanan Data Finansial)</td>
+<td><strong>KNF-03</strong> (Otorisasi Role Owner)</td>
+<td>UC-04</td>
+<td><code>wf-05</code> Kelola Master<br><code>wf-07</code> Laporan Pendapatan</td>
+<td><strong>Must</strong></td>
+<td><strong>TC-11</strong></td>
+</tr>
+</tbody></table></div>
+    </div>
+
+    <!-- BAGIAN 3 & 4: PERANCANGAN, IMPLEMENTASI, & EVALUASI -->
+    <div class="section-break">
+        <div class="section-header-box">
+            <h1>BAGIAN III: PERANCANGAN, IMPLEMENTASI, DAN EVALUASI PENGUJIAN</h1>
+        </div>
+        <h1 class="heading-1">LAPORAN AKHIR TUGAS BESAR REKAYASA PERANGKAT LUNAK</h1>
+<h1 class="heading-1">SISTEM MANAJEMEN RENTAL PLAYSTATION BERBASIS WEB</h1>
+<h2 class="heading-2">(EXITO PLAYBOX — <code>rpl-project-ps</code>)</h2>
+<ul class="doc-list">
+<li><strong>Nama Pengembang:</strong> Maruf Syahbana</li>
+<li><strong>Peran:</strong> Product Owner, Scrum Master, & Full-Stack Developer</li>
+<li><strong>Mitra Usaha:</strong> Exito Playbox Rental PS (Bpk. Hendra — Sampit, Kalimantan Tengah)</li>
+<li><strong>Status Rilis:</strong> v1.0.1 (Production Ready)</li>
+<li><strong>Repositori:</strong> https://github.com/marufsyahbana2005/rpl-project-ps</li>
+</ul>
+<hr class="doc-divider" />
+<h1 class="heading-1">BAB III PERANCANGAN SISTEM DAN RENCANA PENGUJIAN</h1>
+<p class="doc-p">Bab ini mendokumentasikan secara komprehensif seluruh proses analisis kebutuhan, pemodelan sistem berbasis UML, perancangan arsitektur basis data relasional ternormalisasi, desain antarmuka pengguna (wireframe), hasil tinjauan desain (<em>design review</em>), strategi pengujian perangkat lunak, serta matriks perubahan terhadap rancangan awal untuk Sistem Manajemen Rental PlayStation (Exito Playbox).</p>
+<hr class="doc-divider" />
+<h2 class="heading-2">3.1 Gambaran Umum dan Konteks Pengembangan</h2>
+<h3 class="heading-3">3.1.1 Profil Klien dan Karakteristik Bisnis</h3>
+<p class="doc-p">Exito Playbox merupakan usaha jasa rental konsol permainan PlayStation yang beroperasi di Kota Sampit, Kotawaringin Timur. Tempat usaha ini dikelola langsung oleh pemilik (<em>Owner</em>), Bpk. Hendra, dengan dibantu oleh staf operator kasir. Unit konsol yang disewakan berjumlah 8 unit, terdiri atas 2 unit PlayStation 3 (PS3), 4 unit PlayStation 4 (PS4), dan 2 unit PlayStation 5 (PS5). Setiap unit dilengkapi dengan televisi dan perlengkapan stik nirkabel yang disewakan menggunakan skema paket jam (<em>hourly billing</em>).</p>
+<h3 class="heading-3">3.1.2 Permasalahan Operasional</h3>
+<p class="doc-p">Berdasarkan hasil elisitasi kebutuhan dan wawancara lapangan pada Minggu 1–3, teridentifikasi sejumlah masalah utama operasional:</p>
+<ol class="doc-list">
+<li><strong>Kesalahan Pencatatan Manual:</strong> Kasir mencatat jam mulai sewa pada nota kertas. Ketika antrean pelanggan menumpuk di akhir pekan, kasir kerap keliru menghitung selisih waktu sewa dan total tagihan.</li>
+<li><strong>Ketiadaan Visibilitas Ketersediaan Unit:</strong> Kasir kesulitan memantau unit konsol mana yang kosong atau sedang berjalan tanpa harus memeriksa satu per satu ke setiap ruangan/layar TV.</li>
+<li><strong>Perselisihan Denda Keterlambatan (<em>Overtime</em>):</strong> Perhitungan denda kelebihan waktu sewa dilakukan secara perkiraan manual tanpa standar toleransi (<em>grace period</em>) yang pasti, sehingga memicu keluhan pelanggan.</li>
+<li><strong>Ketiadaan Rekapitulasi Finansial Otomatis:</strong> Pemilik harus menghitung ulang seluruh lembaran nota fisik setiap malam untuk mengetahui total omset harian dan performa unit rental terlaris.</li>
+</ul>
+<h3 class="heading-3">3.1.3 Metode Pengembangan dan Alur <em>Vibe Coding</em> Terkendali</h3>
+<p class="doc-p">Pengembangan sistem Exito Playbox menerapkan metodologi <strong>Agile Scrum</strong> dengan durasi 4 sprint mingguan, mengedepankan pendekatan <em>vibe coding</em> terkendali (<em>Controlled Vibe Coding</em>). Dalam pendekatan ini:</p>
+<ul class="doc-list">
+<li><strong>Peran Manusia (Analyst & Developer):</strong> Memegang kendali mutlak atas pendefinisian aturan bisnis, arsitektur data, verifikasi logika, dan persetujuan kode (<em>Review & Approve</em>).</li>
+<li><strong>Peran AI:</strong> Digunakan sebagai akselerator perancangan draf awal, pembuatan skenario kasus uji (<em>test case</em>), dan pemodelan diagram berdasarkan batasan ketat dokumen PRD dan kamus data.</li>
+<li><strong>Integritas Versi (Git):</strong> Setiap artefak dikelola melalui percabangan fitur Git yang terstruktur (<code>docs-antarmuka</code>, <code>docs-rencana-uji</code>) dengan tinjauan sejawat (<em>pull request</em>) sebelum digabungkan ke cabang utama (<code>main</code>).</li>
+</ul>
+<hr class="doc-divider" />
+<h2 class="heading-2">3.2 Analisis Kebutuhan Sistem</h2>
+<h3 class="heading-3">3.2.1 Kebutuhan Fungsional (KF) dengan Prioritas MoSCoW</h3>
+<p class="doc-p">Kebutuhan fungsional diturunkan dari <em>User Story</em> (US-01 s/d US-03) dan diklasifikasikan menggunakan metode MoSCoW:</p>
+<div class="table-container"><table class="doc-table">
+<thead><tr>
+<th>ID KF</th>
+<th>Deskripsi Kebutuhan Fungsional</th>
+<th>Sumber</th>
+<th>Prioritas</th>
+<th>Test Case Terkait</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>KF-01</strong></td>
+<td>Mengubah status unit konsol menjadi 'terpakai' saat sewa dimulai dan kembali 'tersedia' saat selesai.</td>
+<td>US-01</td>
+<td><strong>Must</strong></td>
+<td>TC-01, TC-02</td>
+</tr>
+<tr>
+<td><strong>KF-02</strong></td>
+<td>Mengalkulasi durasi dan total biaya sewa secara otomatis berdasarkan paket jam resmi yang dipilih.</td>
+<td>US-01</td>
+<td><strong>Must</strong></td>
+<td>TC-03, TC-04</td>
+</tr>
+<tr>
+<td><strong>KF-03</strong></td>
+<td>Menghentikan timer dan menghitung denda keterlambatan secara otomatis berdasarkan aturan <em>grace period</em> 5 menit.</td>
+<td>US-01</td>
+<td><strong>Should</strong></td>
+<td>TC-05, TC-06</td>
+</tr>
+<tr>
+<td><strong>KF-04</strong></td>
+<td>Menyajikan dasbor visual pemantauan status ketersediaan seluruh konsol secara <em>real-time</em> via <em>HTTP polling</em>.</td>
+<td>US-02</td>
+<td><strong>Must</strong></td>
+<td>TC-07</td>
+</tr>
+<tr>
+<td><strong>KF-05</strong></td>
+<td>Menyediakan fitur penyaringan (<em>filter</em>) daftar unit konsol berdasarkan jenis konsol (PS3, PS4, PS5).</td>
+<td>US-02</td>
+<td>Could</td>
+<td>TC-Filt-01</td>
+</tr>
+<tr>
+<td><strong>KF-06</strong></td>
+<td>Merekapitulasi total pendapatan transaksi sewa harian dan bulanan secara otomatis tanpa kalkulasi manual.</td>
+<td>US-03</td>
+<td><strong>Must</strong></td>
+<td>TC-08</td>
+</tr>
+<tr>
+<td><strong>KF-07</strong></td>
+<td>Menyimpan riwayat transaksi sewa secara permanen dan menyediakan fitur penelusuran audit nota sewa.</td>
+<td>US-03</td>
+<td><strong>Should</strong></td>
+<td>TC-10</td>
+</tr>
+<tr>
+<td><strong>KF-08</strong></td>
+<td>Memvalidasi kelengkapan masukan form kasir (nama pelanggan wajib diisi) sebelum data disimpan ke basis data.</td>
+<td>US-01</td>
+<td><strong>Should</strong></td>
+<td>TC-09</td>
+</tr>
+<tr>
+<td><strong>KF-09</strong></td>
+<td>Mencatat inventaris aksesori pendukung konsol (stik cadangan, kabel HDMI).</td>
+<td>Analisis</td>
+<td>Could</td>
+<td>TC-Inv-01</td>
+</tr>
+<tr>
+<td><strong>KF-10</strong></td>
+<td>Menyediakan pencarian data transaksi berdasarkan rentang tanggal dan nama pelanggan.</td>
+<td>Analisis</td>
+<td>Rendah</td>
+<td>TC-10</td>
+</tr>
+</tbody></table></div>
+<h3 class="heading-3">3.2.2 Kebutuhan Non-Fungsional (KNF)</h3>
+<div class="table-container"><table class="doc-table">
+<thead><tr>
+<th>ID KNF</th>
+<th>Kategori</th>
+<th>Parameter Kualitas Terukur</th>
+<th>Prioritas</th>
+<th>Test Case</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>KNF-01</strong></td>
+<td>Kinerja (<em>Performance</em>)</td>
+<td>Halaman dasbor status ketersediaan unit wajib dimuat dalam waktu $\le 2$ detik pada jaringan lokal rental.</td>
+<td><strong>Must</strong></td>
+<td>TC-07</td>
+</tr>
+<tr>
+<td><strong>KNF-02</strong></td>
+<td>Keandalan (<em>Reliability</em>)</td>
+<td>Pencadangan (<em>backup</em>) file basis data SQLite otomatis minimal sekali setiap hari untuk mencegah kehilangan riwayat sewa.</td>
+<td><strong>Should</strong></td>
+<td>TC-Back-01</td>
+</tr>
+<tr>
+<td><strong>KNF-03</strong></td>
+<td>Keamanan (<em>Security</em>)</td>
+<td>Pembatasan hak akses berbasis peran (<em>Role-Based Access Control</em>): menu laporan omset hanya dapat diakses oleh akun <em>Owner</em>.</td>
+<td><strong>Must</strong></td>
+<td>TC-11</td>
+</tr>
+<tr>
+<td><strong>KNF-04</strong></td>
+<td>Kegunaan (<em>Usability</em>)</td>
+<td>Antarmuka kasir dirancang intuitif sehingga dapat dioperasikan oleh kasir baru dengan waktu pengenalan $\le 15$ menit.</td>
+<td><strong>Should</strong></td>
+<td>UAT-Usab-01</td>
+</tr>
+</tbody></table></div>
+<hr class="doc-divider" />
+<h2 class="heading-2">3.3 Pemodelan Sistem Berbasis UML</h2>
+<h3 class="heading-3">3.3.1 Use Case Diagram</h3>
+<p class="doc-p">Diagram use case memetakan interaksi antara dua aktor utama: <strong>Kasir / Operator</strong> dan <strong>Pemilik Rental (Owner)</strong> terhadap sistem Exito Playbox.</p>
+<ul class="doc-list">
+<li><strong>Kasir:</strong> Berinteraksi dengan UC-01 (Catat Transaksi Sewa), UC-02 (Kelola Penghentian dan Denda), dan UC-03 (Pantau Ketersediaan Unit).</li>
+<li><strong>Pemilik (Owner):</strong> Mengakses seluruh fungsi kasir ditambah hak khusus pada UC-04 (Lihat Laporan Pendapatan) dan UC-05 (Telusuri Riwayat Transaksi).</li>
+<li>Relasi <code><<include>></code>: UC-01 mengikutsertakan UC-03 untuk memastikan konsol berstatus tersedia sebelum sewa dibuka, dan UC-02 mengikutsertakan kalkulasi durasi dari UC-01.</li>
+</ul>
+<h3 class="heading-3">3.3.2 Skenario Use Case Utama</h3>
+<ul class="doc-list">
+<li><strong>UC-01 (Catat Transaksi Sewa):</strong> Kasir memilih unit kosong $\rightarrow$ input nama pelanggan $\rightarrow$ pilih paket durasi $\rightarrow$ sistem memvalidasi kelengkapan $\rightarrow$ status konsol berubah 'terpakai' dan timer mulai berjalan mundur.</li>
+<li><strong>UC-02 (Kelola Penghentian dan Denda):</strong> Kasir memilih transaksi aktif $\rightarrow$ sistem mengevaluasi durasi terpakai terhadap paket $\rightarrow$ jika keterlambatan $> 5$ menit (<em>grace period</em> terlewati), denda dihitung proporsional per 15/30 menit $\rightarrow$ kasir menerima pembayaran $\rightarrow$ unit konsol kembali 'tersedia'.</li>
+<li><strong>UC-03 (Pantau Dasbor Unit):</strong> Dasbor melakukan <em>HTTP polling</em> berkala setiap 10 detik ke server untuk menyajikan warna status unit secara akurat bagi seluruh operator.</li>
+<li><strong>UC-04 (Lihat Laporan Pendapatan):</strong> Pemilik memilih filter periode tanggal $\rightarrow$ sistem mengagregasi total transaksi berstatus 'lunas' $\rightarrow$ layar menampilkan total omset paket, denda, omset bersih, dan kontribusi per unit PlayStation.</li>
+<li><strong>UC-05 (Telusuri Riwayat Transaksi):</strong> Pemilik dan kasir menelusuri data audit transaksi berdasarkan nama pelanggan atau tanggal tertentu dengan paginasi terstruktur.</li>
+</ul>
+<hr class="doc-divider" />
+<h2 class="heading-2">3.4 Perancangan Basis Data Relasional</h2>
+<p class="doc-p">Basis data diimplementasikan pada <strong>SQLite</strong> dengan penegakan kunci asing (<code>PRAGMA foreign_keys = ON</code>), terdiri atas 5 entitas ternormalisasi 3NF:</p>
+<ol class="doc-list">
+<li><strong><code>users</code></strong> (<code>id</code> [PK], <code>username</code> [UNIQUE], <code>password_hash</code>, <code>role</code>, <code>is_active</code>).</li>
+<li><strong><code>consoles</code></strong> (<code>id</code> [PK], <code>kode_konsol</code> [UNIQUE], <code>jenis_konsol</code>, <code>status</code>).</li>
+<li><strong><code>packages</code></strong> (<code>id</code> [PK], <code>nama_paket</code> [UNIQUE], <code>jenis_konsol</code>, <code>durasi_menit</code>, <code>harga</code>, <code>is_active</code>).</li>
+<li><strong><code>transactions</code></strong> (<code>id</code> [PK], <code>nama_pelanggan</code>, <code>user_id</code> [FK], <code>console_id</code> [FK], <code>package_id</code> [FK], <code>waktu_mulai</code>, <code>waktu_selesai</code>, <code>status_bayar</code>).</li>
+<li><strong><code>fines</code></strong> (<code>id</code> [PK], <code>transaction_id</code> [FK, UNIQUE], <code>menit_terlambat</code>, <code>biaya_denda</code>).</li>
+</ul>
+<hr class="doc-divider" />
+<h2 class="heading-2">3.5 Perancangan Antarmuka Pengguna (User Interface)</h2>
+<p class="doc-p">Peta navigasi sistem mengadopsi struktur terpusat di mana seluruh 7 halaman fungsional dapat diakses dalam maksimal 1 hingga 2 kali klik dari Dasbor Utama. Halaman Laporan Omset dan Kelola Master diberi penanda khusus pemilik untuk menegakkan prinsip pembatasan hak akses (<em>Role-Based Access Control</em>).</p>
+<hr class="doc-divider" />
+<h2 class="heading-2">3.6 Rencana Pengujian dan Matriks Keterlacakan</h2>
+<p class="doc-p">Pengujian memadukan teknik <em>Manual Black-Box Testing</em> (Equivalence Partitioning dan Boundary Value Analysis), pengujian otomatis integritas skema SQLite, serta sesi <em>User Acceptance Testing</em> (UAT) bersama pemilik rental. Sistem diverifikasi oleh 11 kasus uji dasar yang mencakup kondisi normal, kasus tidak valid, dan nilai batas (TC-01 hingga TC-11).</p>
+<hr class="doc-divider" />
+<h2 class="heading-2">3.7 Perubahan terhadap Rancangan Awal dan Sinkronisasi Pengujian</h2>
+<p class="doc-p">Selama proses implementasi pada Bab 4, terdapat sejumlah penyesuaian teknis terhadap rancangan awal yang tercantum pada Bab 3. Penyesuaian ini dipicu oleh hasil pengujian unit, temuan audit keamanan OWASP, penutupan laporan cacat melalui <em>Test-Driven Development</em> (TDD), serta optimalisasi beban server kasir.</p>
+<p class="doc-p">Tabel 3.5 merangkum seluruh perubahan arsitektural dan rancangan detail (Lampiran B.4).</p>
+<p class="doc-p"><strong>Tabel 3.5 Matriks Perubahan terhadap Rancangan Awal (Bab 3 vs Bab 4)</strong></p>
+<div class="table-container"><table class="doc-table">
+<thead><tr>
+<th>Komponen Rancangan</th>
+<th>Rancangan Awal (Bab 3)</th>
+<th>Realisasi Implementasi (Bab 4)</th>
+<th>Alasan Perubahan</th>
+<th>Kategori Perubahan</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>Penamaan Kolom Kueri JOIN Transaksi</strong></td>
+<td>Kueri SQL JOIN mengasumsikan kolom nama konsol adalah <code>c.nama_konsol</code>.</td>
+<td>Disesuaikan menjadi <code>c.kode_konsol</code> sesuai kamus data skema basis data SQLite.</td>
+<td>Menjaga konsistensi DDL SQLite dan mencegah kesalahan <code>sqlite3.OperationalError: no such column</code>.</td>
+<td><strong>Perbaikan</strong></td>
+</tr>
+<tr>
+<td><strong>Sanitasi Masukan Nama Pelanggan Transaksi</strong></td>
+<td>Validasi masukan mengasumsikan tipe selalu teks: <code>nama_pelanggan.strip()</code>.</td>
+<td>Normalisasi eksplisit via <code>str(nama_pelanggan).strip()</code> pada <code>_validate_transaction_payload()</code>.</td>
+<td>Penutupan Cacat D-01: payload non-string (seperti integer via dev tools) sebelumnya memicu eksepsi 500 <code>AttributeError</code>.</td>
+<td><strong>Penyempurnaan</strong></td>
+</tr>
+<tr>
+<td><strong>Integritas Keunikan Nama Paket Sewa</strong></td>
+<td>Batasan <code>UNIQUE(nama_paket)</code> standar SQLite yang bersifat <em>case-sensitive</em>.</td>
+<td>Validasi kueri <code>LOWER(nama_paket) = LOWER(?)</code> sebelum operasi INSERT maupun UPDATE di <code>services.py</code>.</td>
+<td>Penutupan Cacat D-02: mencegah data ganda akibat variasi huruf kapital (misal "Paket Hemat" vs "paket hemat").</td>
+<td><strong>Penyempurnaan</strong></td>
+</tr>
+<tr>
+<td><strong>Proteksi Mutasi Status Konsol Terpakai</strong></td>
+<td>Pemilik diperbolehkan mengubah status konsol secara manual ke <code>'maintenance'</code> kapan saja.</td>
+<td>Penolakan mutasi manual (HTTP 400) bila konsol sedang berada dalam status <code>'terpakai'</code>.</td>
+<td>Penutupan Cacat D-03: melindungi konsistensi status operasional konsol yang sedang disewa aktif oleh pelanggan.</td>
+<td><strong>Perbaikan</strong></td>
+</tr>
+<tr>
+<td><strong>Mekanisme Perlindungan CSRF</strong></td>
+<td>Direncanakan menggunakan pustaka pihak ketiga <code>Flask-WTF</code>.</td>
+<td>Membangun modul generator token CSRF internal berbasis sesi dan middleware <code>@app.before_request</code>.</td>
+<td>Menghindari <em>dependency bloat</em>, memangkas jejak memori runner di mesin kasir, dan kontrol penuh atas pesan galat 400.</td>
+<td><strong>Simplifikasi</strong></td>
+</tr>
+<tr>
+<td><strong>Cakupan Rencana Pengujian (3.6 vs 4.4)</strong></td>
+<td>Rencana pengujian awal memuat 11 kasus uji manual dasar (TC-01 s/d TC-11).</td>
+<td>Realisasi mencakup 22 test case otomatis pytest (38 <em>passed</em>), 3 uji cacat TDD, uji alur HTTP, dan matriks RBAC.</td>
+<td>Peningkatan rigor pengujian otomatis, jaminan regresi tanpa cacat, dan verifikasi batas masukan menggunakan fixture terisolasi.</td>
+<td><strong>Penyempurnaan</strong></td>
+</tr>
+</tbody></table></div>
+<hr class="doc-divider" />
+<h1 class="heading-1">BAB IV IMPLEMENTASI, PENGUJIAN, DAN EVALUASI</h1>
+<p class="doc-p">Bab ini menguraikan seluruh realisasi teknis pengembangan sistem Exito Playbox, evaluasi pengerasan keamanan OWASP Top 10, hasil pengujian perangkat lunak multi-level, arsitektur rilis dan deployment produksi, serta pembahasan kritis mengenai dampak praktik vibe coding.</p>
+<hr class="doc-divider" />
+<h2 class="heading-2">4.1 Lingkungan Pengembangan dan Penerapan Etika AI</h2>
+<p class="doc-p">Sistem Exito Playbox dibangun dan diuji pada lingkungan perangkat keras dan perangkat lunak yang terisolasi untuk memastikan stabilitas dan reproduksibilitas.</p>
+<p class="doc-p"><strong>Tabel 4.1 Spesifikasi Perangkat Keras dan Perangkat Lunak Lingkungan Pengembangan</strong></p>
+<div class="table-container"><table class="doc-table">
+<thead><tr>
+<th>Komponen</th>
+<th>Spesifikasi Lingkungan Pengembang</th>
+<th>Spesifikasi Lingkungan Produksi (Target)</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>Sistem Operasi</strong></td>
+<td>Windows 11 Home 64-bit (Build 26100)</td>
+<td>Windows 10/11 Pro / Ubuntu Linux 22.04 LTS</td>
+</tr>
+<tr>
+<td><strong>Prosesor (CPU)</strong></td>
+<td>Intel Core i5 / AMD Ryzen 5 (4 Cores / 8 Threads, 2.4 GHz)</td>
+<td>Dual-Core 2.0 GHz atau lebih tinggi</td>
+</tr>
+<tr>
+<td><strong>Memori Utama (RAM)</strong></td>
+<td>16 GB DDR4</td>
+<td>Minimal 4 GB (Rekomendasi 8 GB)</td>
+</tr>
+<tr>
+<td><strong>Penyimpanan (Storage)</strong></td>
+<td>512 GB NVMe SSD</td>
+<td>120 GB SSD (Kebutuhan instalasi < 500 MB)</td>
+</tr>
+<tr>
+<td><strong>Runtime Bahasa</strong></td>
+<td>Python 3.12.x / 3.13.x (CPython 64-bit)</td>
+<td>Python 3.10.x s/d 3.13.x</td>
+</tr>
+<tr>
+<td><strong>Virtual Environment</strong></td>
+<td>Python Virtual Environment (<code>.venv</code>)</td>
+<td>Isolated <code>.venv</code></td>
+</tr>
+<tr>
+<td><strong>Manajer Versi (VCS)</strong></td>
+<td>Git 2.40+ (Integrasi GitHub)</td>
+<td>Git Runtime untuk penarikan rilis stabil</td>
+</tr>
+</tbody></table></div>
+<p class="doc-p"><strong>Tabel 4.2 Daftar Dependensi Pustaka Perangkat Lunak (<code>requirements.txt</code>)</strong></p>
+<div class="table-container"><table class="doc-table">
+<thead><tr>
+<th>Nama Paket</th>
+<th>Versi Terkunci</th>
+<th>Peran dan Fungsi dalam Sistem</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>Flask</strong></td>
+<td><code>3.1.3</code></td>
+<td>Framework web mikro utama untuk perutean HTTP, manajemen sesi, dan perenderan Jinja2.</td>
+</tr>
+<tr>
+<td><strong>Werkzeug</strong></td>
+<td><code>3.1.3</code></td>
+<td>Pustaka utilitas WSGI, fungsi hashing kata sandi (<code>scrypt</code>), dan penanganan payload HTTP.</td>
+</tr>
+<tr>
+<td><strong>Jinja2</strong></td>
+<td><code>3.1.5</code></td>
+<td>Mesin templat antarmuka dengan fitur proteksi otomatis terhadap XSS (<em>autoescaping</em>).</td>
+</tr>
+<tr>
+<td><strong>Waitress</strong></td>
+<td><code>3.0.2</code></td>
+<td>Server produksi WSGI multi-threaded murni (<em>pure-Python</em>) untuk deployment lingkungan kasir.</td>
+</tr>
+<tr>
+<td><strong>pytest</strong></td>
+<td><code>9.1.1</code> (Dev)</td>
+<td>Framework pengujian otomatis unit, integrasi, dan pengujian batas masukan parametris.</td>
+</tr>
+<tr>
+<td><strong>pytest-cov</strong></td>
+<td><code>6.0.0</code> (Dev)</td>
+<td>Perangkat pengukuran cakupan kode (<em>code coverage</em>) pengujian perangkat lunak.</td>
+</tr>
+</tbody></table></div>
+<h3 class="heading-3">Penerapan Etika Penggunaan Kecerdasan Buatan (AI)</h3>
+<p class="doc-p">Pengembangan sistem ini memanfaatkan kakas asisten kecerdasan buatan (<em>Generative AI</em>) berbasis model Gemini melalui lingkungan terpandu Antigravity. Seluruh tim memegang teguh prinsip etika akademik:</p>
+<ol class="doc-list">
+<li><strong>Transparansi Log Aktivitas:</strong> Setiap interaksi, saran kode, dan prompt terdokumentasi secara kronologis pada jurnal vibe coding.</li>
+<li><strong>Kedaulatan Logika Manusia (<em>Human-in-the-Loop</em>):</strong> AI bertindak sebagai akselerator penyusun draf kode dan skenario uji awal. Seluruh arsitektur, pemilihan dependensi, mitigasi celah keamanan, dan verifikasi kebenaran logika dikendalikan dan disetujui secara mutlak oleh pengembang manusia.</li>
+<li><strong>Akuntabilitas Penuh:</strong> Seluruh bug, regresi fungsional, maupun kegagalan keamanan menjadi tanggung jawab penuh pengembang manusia, bukan kesalahan entitas kecerdasan buatan.</li>
+</ul>
+<hr class="doc-divider" />
+<h2 class="heading-2">4.2 Implementasi Fitur dan Siklus Rekayasa Prompt</h2>
+<p class="doc-p">Sistem Exito Playbox dibangun menggunakan <strong>Arsitektur Tiga Lapis (<em>Three-Tier Architecture</em>)</strong> yang memisahkan lapisan Presentasi (<code>templates/</code>), Lapisan Logika Bisnis (<code>services.py</code>), dan Lapisan Akses Data (<code>models.py</code>).</p>
+<p class="doc-p">Tiga fitur utama yang menjadi tulang punggung sistem adalah:</p>
+<ol class="doc-list">
+<li><strong>Fitur F1 — Manajemen Master Konsol (CRUD & Status Inventaris):</strong> Mengelola unit konsol fisik dengan validasi ketat kode unik dan jenis konsol (PS3/PS4/PS5).</li>
+<li><strong>Fitur F2 — Transaksi Buka Sewa Multi-Tabel Atomik:</strong> Membuka sesi sewa kasir dengan memilih unit konsol yang sedang berstatus <code>'tersedia'</code> dan mengikatnya ke baris transaksi baru secara atomik.</li>
+<li><strong>Fitur F3 — Penyelesaian Sewa & Perhitungan Denda Otomatis:</strong> Menutup transaksi sewa dengan mengevaluasi durasi penggunaan nyata terhadap durasi paket; bila melewati toleransi 5 menit (<em>grace period</em>), denda Rp 1.000/menit dihitung otomatis dan dicatat ke tabel <code>fines</code>.</li>
+</ul>
+<p class="doc-p">Berikut adalah implementasi transaksi atomik pada lapisan layanan data:</p>
+<pre class="code-block python"><code>
+# services.py: Transaksi atomik pembukaan sewa konsol
+def create_transaction(nama_pelanggan, user_id, console_id, package_id):
+    # Validasi payload masukan
+    is_valid, msg = _validate_transaction_payload(nama_pelanggan, console_id, package_id)
+    if not is_valid:
+        return False, msg
+
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        # Verifikasi ketersediaan konsol
+        cursor.execute(&quot;SELECT status FROM consoles WHERE id = ?&quot;, (console_id,))
+        row = cursor.fetchone()
+        if not row or row[&quot;status&quot;] != &quot;tersedia&quot;:
+            return False, &quot;Konsol tidak tersedia untuk disewa.&quot;
+
+        # Mutasi dua tabel dalam satu transaksi atomik
+        cursor.execute(
+            &quot;&quot;&quot;INSERT INTO transactions (nama_pelanggan, user_id, console_id, package_id, waktu_mulai, status_bayar)
+               VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, &#x27;lunas&#x27;)&quot;&quot;&quot;,
+            (nama_pelanggan.strip(), user_id, console_id, package_id)
+        )
+        cursor.execute(&quot;UPDATE consoles SET status = &#x27;terpakai&#x27; WHERE id = ?&quot;, (console_id,))
+        conn.commit()
+        return True, &quot;Sesi sewa berhasil dibuka.&quot;
+</code></pre>
+<hr class="doc-divider" />
+<h2 class="heading-2">4.3 Tinjauan dan Pengerasan Keamanan (OWASP Top 10)</h2>
+<p class="doc-p">Berdasarkan hasil audit mandiri terhadap basis kode prototipe awal, teridentifikasi 7 potensi celah keamanan (SEC-PS-01 hingga SEC-PS-07) yang berhasil dimitigasi secara tuntas.</p>
+<p class="doc-p"><strong>Tabel 4.5 Matriks Temuan Audit Keamanan dan Status Perbaikan (OWASP Top 10)</strong></p>
+<div class="table-container"><table class="doc-table">
+<thead><tr>
+<th>ID Temuan</th>
+<th>Kategori OWASP</th>
+<th>Deskripsi Celah Keamanan</th>
+<th>Tingkat Risiko</th>
+<th>Status Perbaikan</th>
+<th>Commit Git Terkait</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>SEC-PS-01</strong></td>
+<td>A07:2021 Identification & Auth</td>
+<td>Ketiadaan perlindungan CSRF pada 8 formulir mutasi POST.</td>
+<td><strong>Tinggi</strong></td>
+<td><strong>Tuntas Teratasi</strong></td>
+<td><code>7d828de</code></td>
+</tr>
+<tr>
+<td><strong>SEC-PS-02</strong></td>
+<td>A07:2021 Identification & Auth</td>
+<td>Kerentanan serangan brute-force login tanpa batas percobaan.</td>
+<td><strong>Tinggi</strong></td>
+<td><strong>Tuntas Teratasi</strong></td>
+<td><code>7d828de</code></td>
+</tr>
+<tr>
+<td><strong>SEC-PS-03</strong></td>
+<td>A05:2021 Security Misconfig</td>
+<td>Cookie sesi tidak memiliki atribut <code>HttpOnly</code>, <code>SameSite</code>, dan <code>Secure</code>.</td>
+<td>Sedang</td>
+<td><strong>Tuntas Teratasi</strong></td>
+<td><code>7d828de</code></td>
+</tr>
+<tr>
+<td><strong>SEC-PS-04</strong></td>
+<td>A05:2021 Security Misconfig</td>
+<td>Ketiadaan security headers (<code>X-Frame-Options</code>, <code>X-Content-Type</code>).</td>
+<td>Sedang</td>
+<td><strong>Tuntas Teratasi</strong></td>
+<td><code>7d828de</code></td>
+</tr>
+<tr>
+<td><strong>SEC-PS-05</strong></td>
+<td>A02:2021 Cryptographic Failures</td>
+<td>Penggunaan <em>hard-coded secret key</em> default pada mode produksi.</td>
+<td><strong>Tinggi</strong></td>
+<td><strong>Tuntas Teratasi</strong></td>
+<td><code>7d828de</code></td>
+</tr>
+<tr>
+<td><strong>SEC-PS-06</strong></td>
+<td>A01:2021 Broken Access Control</td>
+<td>Potensi Open Redirect pada manipulasi parameter query <code>next</code>.</td>
+<td>Sedang</td>
+<td><strong>Tuntas Teratasi</strong></td>
+<td><code>a46bae5</code></td>
+</tr>
+<tr>
+<td><strong>SEC-PS-07</strong></td>
+<td>A03:2021 Injection</td>
+<td>Penanganan karakter wildcard <code>%</code> dan <code>_</code> pada kueri pencarian LIKE.</td>
+<td>Rendah</td>
+<td><strong>Tuntas Teratasi</strong></td>
+<td><code>98fb5a8</code></td>
+</tr>
+</tbody></table></div>
+<hr class="doc-divider" />
+<h2 class="heading-2">4.4 Pengujian Perangkat Lunak dan Evaluasi Usabilitas</h2>
+<p class="doc-p">Pengujian sistem dilakukan melalui tiga lapisan: pengujian otomatis berbasis pytest, penutupan laporan cacat menggunakan <em>Test-Driven Development</em> (TDD), serta <em>User Acceptance Testing</em> (UAT) bersama mitra riil.</p>
+<p class="doc-p"><strong>Tabel 4.7 Ringkasan Eksekusi Pengujian Otomatis Pytest</strong></p>
+<div class="table-container"><table class="doc-table">
+<thead><tr>
+<th>Kategori Pengujian</th>
+<th>Berkas Skrip Pengujian</th>
+<th>Jumlah Test Case</th>
+<th>Jumlah Skenario Uji</th>
+<th>Status</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>Validasi & Batas</strong></td>
+<td><code>tests/test_validasi.py</code></td>
+<td>5</td>
+<td>13 skenario</td>
+<td><strong>100% Lulus (Passed)</strong></td>
+</tr>
+<tr>
+<td><strong>Alur & Akses RBAC</strong></td>
+<td><code>tests/test_alur_akses.py</code></td>
+<td>5</td>
+<td>9 skenario</td>
+<td><strong>100% Lulus (Passed)</strong></td>
+</tr>
+<tr>
+<td><strong>CRUD Konsol</strong></td>
+<td><code>tests/test_crud_konsol.py</code></td>
+<td>4</td>
+<td>5 skenario</td>
+<td><strong>100% Lulus (Passed)</strong></td>
+</tr>
+<tr>
+<td><strong>CRUD Paket</strong></td>
+<td><code>tests/test_crud_packages.py</code></td>
+<td>3</td>
+<td>4 skenario</td>
+<td><strong>100% Lulus (Passed)</strong></td>
+</tr>
+<tr>
+<td><strong>Transaksi Berelasi</strong></td>
+<td><code>tests/test_transaksi_berelasi.py</code></td>
+<td>3</td>
+<td>4 skenario</td>
+<td><strong>100% Lulus (Passed)</strong></td>
+</tr>
+<tr>
+<td><strong>Rilis & Cadangan</strong></td>
+<td><code>tests/test_rilis.py</code></td>
+<td>2</td>
+<td>3 skenario</td>
+<td><strong>100% Lulus (Passed)</strong></td>
+</tr>
+<tr>
+<td><strong>TOTAL</strong></td>
+<td><strong>6 berkas pengujian</strong></td>
+<td><strong>22 Test Case</strong></td>
+<td><strong>38 Skenario</strong></td>
+<td><strong>100% Passed (1.48 detik)</strong></td>
+</tr>
+</tbody></table></div>
+<p class="doc-p">Tiga cacat perangkat lunak diselesaikan tuntas via TDD:</p>
+<ul class="doc-list">
+<li><strong>Cacat D-01:</strong> Normalisasi <code>str(nama_pelanggan)</code> (commit <code>16db5e1</code>).</li>
+<li><strong>Cacat D-02:</strong> Validasi duplikasi paket case-insensitive <code>LOWER(nama_paket)</code> (commit <code>f7f17d9</code>).</li>
+<li><strong>Cacat D-03:</strong> Proteksi penolakan mutasi status konsol aktif (commit <code>60f2567</code>).</li>
+</ul>
+<p class="doc-p">Pengujian UAT bersama Bpk. Hendra dan kasir rental menghasilkan tingkat kelulusan 100% pada 6 skenario operasional dan skor <strong>System Usability Scale (SUS)</strong> rata-rata sebesar <strong>87.5 / 100 (Grade A+, Kategori Excellent)</strong>.</p>
+<hr class="doc-divider" />
+<h2 class="heading-2">4.5 Rilis dan Deployment Produksi</h2>
+<p class="doc-p">Sistem Exito Playbox dirilis mengikuti standar <strong>Semantic Versioning</strong> (<code>v1.0.0</code> dan perbaikan <code>v1.0.1</code>). Untuk lingkungan operasional toko, sistem dijalankan menggunakan runner produksi WSGI <strong>Waitress</strong> versi 3.0.2 dengan konfigurasi multi-threaded:</p>
+<pre class="code-block bash"><code>
+# Perintah eksekusi runner produksi Waitress pada mesin kasir
+waitress-serve --listen=127.0.0.1:8000 --threads=6 app:app
+</code></pre>
+<p class="doc-p">Integritas data transaksi diamankan melalui skrip utilitas <code>cadangkan.py</code> yang memanfaatkan SQLite Online Backup API untuk mencadangkan basis data secara konsisten tanpa downtime (<em>zero-downtime hot backup</em>).</p>
+<hr class="doc-divider" />
+<h2 class="heading-2">4.6 Pembahasan Kritis dan Analisis Vibe Coding</h2>
+<p class="doc-p">Sistem berhasil memenuhi 100% dari 8 Kebutuhan Fungsional (KF-01 s/d KF-08) dan 3 Kebutuhan Non-Fungsional (KNF-01 s/d KNF-03) dari PRD.</p>
+<p class="doc-p">Berdasarkan ekstraksi kuantitatif terhadap 61 entri log jurnal vibe coding:</p>
+<ul class="doc-list">
+<li><strong>Terima (Accepted):</strong> 55 entri (<strong>90.2%</strong>).</li>
+<li><strong>Ubah (Modified):</strong> 6 entri (<strong>9.8%</strong>).</li>
+<li><strong>Tolak (Rejected):</strong> 0 entri (<strong>0.0%</strong>).</li>
+</ul>
+<p class="doc-p">Analisis dampak waktu membuktikan bahwa galat keamanan menuntut waktu perbaikan terpanjang (rata-rata 25 menit) akibat karakteristik <em>silent failure</em>. Praktik vibe coding berhasil meningkatkan kecepatan produksi kode, namun memindahkan beban kognitif pengembang manusia ke arah pengawasan arsitektur, pengujian mutasi, dan audit keamanan.</p>
+<p class="doc-p">Tiga keterbatasan utama sistem saat ini adalah penyimpanan rate limiting berbasis in-memory, belum adanya integrasi payment gateway QRIS otomatis, dan pencadangan yang masih tersimpan lokal. Rekomendasi masa depan mencakup migrasi ke PostgreSQL/Redis, integrasi API QRIS dinamis, dan kontainerisasi aplikasi menggunakan Docker.</p>
+<hr class="doc-divider" />
+<h1 class="heading-1">DAFTAR PUSTAKA</h1>
+<p class="doc-p">[1] J. Brooke, "SUS: A 'Quick and Dirty' Usability Scale," in <em>Usability Evaluation in Industry</em>, P. W. Jordan, B. Thomas, I. L. McClelland, and B. Weerdmeester, Eds. London, UK: Taylor & Francis, 1996, pp. 189–194.</p>
+<p class="doc-p">[2] OWASP Foundation, "OWASP Top 10: 2021 - The Ten Most Critical Web Application Security Risks," <em>OWASP Foundation</em>, 2021. [Online]. Tersedia: https://owasp.org/Top10/. [Diakses: 23-Mei-2026].</p>
+<p class="doc-p">[3] T. Preston-Werner, "Semantic Versioning 2.0.0," <em>SemVer.org</em>, 2013. [Online]. Tersedia: https://semver.org/spec/v2.0.0.html. [Diakses: 23-Mei-2026].</p>
+<p class="doc-p">[4] Pallets Projects, "Flask Documentation (Release 3.1.x)," <em>Pallets Projects</em>, 2024. [Online]. Tersedia: https://flask.palletsprojects.com/. [Diakses: 23-Mei-2026].</p>
+<p class="doc-p">[5] Pallets Projects, "Werkzeug: The Comprehensive WSGI Web Application Library," <em>Pallets Projects</em>, 2024. [Online]. Tersedia: https://werkzeug.palletsprojects.com/. [Diakses: 23-Mei-2026].</p>
+<p class="doc-p">[6] Pylons Project, "Waitress: Production-Quality Pure-Python WSGI Server," <em>Pylons Project Documentation</em>, 2024. [Online]. Tersedia: https://docs.pylonsproject.org/projects/waitress/en/latest/. [Diakses: 23-Mei-2026].</p>
+<p class="doc-p">[7] D. R. Hipp, "SQLite: In-Process Database Engine & Online Backup API," <em>SQLite Consortium</em>, 2024. [Online]. Tersedia: https://www.sqlite.org/backup.html. [Diakses: 23-Mei-2026].</p>
+<p class="doc-p">[8] H. Krekel et al., "pytest: Simple Powerful Testing with Python (Version 9.1.x)," <em>pytest.org</em>, 2025. [Online]. Tersedia: https://docs.pytest.org/. [Diakses: 23-Mei-2026].</p>
+<p class="doc-p">[9] R. S. Pressman and B. R. Maxim, <em>Software Engineering: A Practitioner's Approach</em>, 9th ed. New York, NY, USA: McGraw-Hill Education, 2020.</p>
+<p class="doc-p">[10] I. Sommerville, <em>Software Engineering</em>, 10th ed. Boston, MA, USA: Pearson, 2016.</p>
+<p class="doc-p">[11] K. Beck, <em>Test-Driven Development: By Example</em>. Boston, MA, USA: Addison-Wesley Professional, 2002.</p>
+<p class="doc-p">[12] National Institute of Standards and Technology (NIST), "Digital Identity Guidelines: Authentication and Lifecycle Management," <em>NIST Special Publication 800-63B</em>, 2020. [Online]. Tersedia: https://pages.nist.gov/800-63-3/sp800-63b.html. [Diakses: 23-Mei-2026].</p>
+    </div>
+
+</body>
+</html>
