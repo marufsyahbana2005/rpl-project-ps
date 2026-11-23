@@ -276,7 +276,7 @@ def create_package(nama_paket, jenis_konsol, durasi_menit, harga, is_active=1, d
     conn = get_db_connection(db_name)
     try:
         existing = conn.execute(
-            "SELECT id FROM packages WHERE nama_paket = ?;",
+            "SELECT id FROM packages WHERE LOWER(nama_paket) = LOWER(?);",
             (nama_clean,),
         ).fetchone()
 
@@ -338,7 +338,7 @@ def update_package(package_id, nama_paket, jenis_konsol, durasi_menit, harga, is
             return False, errors, 400
 
         duplicate = conn.execute(
-            "SELECT id FROM packages WHERE nama_paket = ? AND id != ?;",
+            "SELECT id FROM packages WHERE LOWER(nama_paket) = LOWER(?) AND id != ?;",
             (nama_clean, package_id),
         ).fetchone()
 

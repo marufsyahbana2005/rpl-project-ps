@@ -36,3 +36,20 @@ def test_cacat_d01_nama_pelanggan_non_string_handled_safely(test_db_path):
     assert sukses is True
     assert tx_id is not None
     assert errors == []
+
+
+# ============================================================================
+# CACAT 2: D-02 — Duplikasi Nama Paket Sewa Berbeda Huruf Besar-Kecil
+# ============================================================================
+def test_cacat_d02_duplikasi_nama_paket_case_insensitive(test_db_path):
+    """
+    D-02: Memverifikasi bahwa pendaftaran nama paket dengan perbedaan huruf besar-kecil
+    ('Paket Malam' vs 'paket malam') ditolak sebagai duplikat.
+    """
+    ok1, _, p1_id = create_package("Paket Malam", "PS4", 120, 20000, db_name=test_db_path)
+    assert ok1 is True
+
+    # Pendaftaran kedua dengan huruf kecil seluruhnya
+    ok2, errors2, _ = create_package("paket malam", "PS4", 120, 20000, db_name=test_db_path)
+    assert ok2 is False
+    assert any("sudah digunakan" in err for err in errors2)
