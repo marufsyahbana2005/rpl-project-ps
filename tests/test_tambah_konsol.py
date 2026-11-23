@@ -14,6 +14,12 @@ init_db("test_rental.db")
 app.config["DATABASE_NAME"] = "test_rental.db"
 client = app.test_client()
 
+# Inisialisasi sesi login peran owner (Langkah 12)
+with client.session_transaction() as sess:
+    sess["user_id"] = 1
+    sess["username"] = "owner_test"
+    sess["role"] = "owner"
+
 print("--- MENJALANKAN 5 PENGUJIAN FORM TAMBAH KONSOL ---")
 
 # Uji 1: Semua kolom valid

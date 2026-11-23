@@ -25,7 +25,7 @@
                 Nama Pelanggan (*Wajib):
             </label>
             <input type="text" id="nama_pelanggan" name="nama_pelanggan" value="{{ data.get('nama_pelanggan', '') }}"
-                   placeholder="Contoh: Budi Santoso"
+                   placeholder="Contoh: Budi Santoso" minlength="2" maxlength="50"
                    style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;"
                    required>
             <small style="color: var(--text-muted); font-size: 0.75rem;">Minimal 2 karakter.</small>

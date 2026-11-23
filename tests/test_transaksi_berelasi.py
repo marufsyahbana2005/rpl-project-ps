@@ -48,6 +48,12 @@ conn.execute(
 conn.commit()
 conn.close()
 
+# Login sesi pengujian (Langkah 12)
+with client.session_transaction() as sess:
+    sess["user_id"] = 1
+    sess["username"] = "kasir1"
+    sess["role"] = "owner"
+
 print("--- MENJALANKAN PENGUJIAN MODUL BERELASI (JOBSHEET 10) ---")
 
 # ============================================================================
