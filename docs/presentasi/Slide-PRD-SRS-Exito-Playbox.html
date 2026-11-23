@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Slide Presentasi PRD & SRS — Exito Playbox</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+            background: #0b0f19;
+            color: #f8fafc;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .slide {
+            width: 297mm;
+            height: 210mm;
+            padding: 16mm 20mm 15mm 20mm;
+            page-break-after: always;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #0f172a 100%);
+            overflow: hidden;
+        }
+        /* Header Top */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(59, 130, 246, 0.4);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .slide-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .slide-badge {
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 11pt;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .slide-title {
+            margin: 0;
+            font-size: 20pt;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+        .slide-project-tag {
+            font-size: 11pt;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+        /* Content Body Grid */
+        .slide-body {
+            flex: 1;
+            display: grid;
+            gap: 16px;
+        }
+        .grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+        .grid-3 {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        .grid-2-1 {
+            grid-template-columns: 1.2fr 0.8fr;
+        }
+        /* Cards */
+        .card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .card-accent-blue {
+            border-top: 4px solid #3b82f6;
+        }
+        .card-accent-emerald {
+            border-top: 4px solid #10b981;
+        }
+        .card-accent-amber {
+            border-top: 4px solid #f59e0b;
+        }
+        .card-accent-purple {
+            border-top: 4px solid #8b5cf6;
+        }
+        .card-title {
+            margin: 0;
+            font-size: 13pt;
+            font-weight: 700;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-body {
+            font-size: 10.5pt;
+            line-height: 1.5;
+            color: #e2e8f0;
+        }
+        .bullet-list {
+            margin: 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .bullet-list li {
+            color: #cbd5e1;
+        }
+        .bullet-list strong {
+            color: #ffffff;
+        }
+        /* Highlight box */
+        .highlight-box {
+            background: rgba(14, 165, 233, 0.12);
+            border-left: 4px solid #0284c7;
+            padding: 10px 14px;
+            border-radius: 0 6px 6px 0;
+            font-size: 10pt;
+            color: #e0f2fe;
+            margin-top: 8px;
+        }
+        /* Table Slide */
+        table.slide-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9.5pt;
+            line-height: 1.4;
+        }
+        table.slide-table th {
+            background: #1e3a8a;
+            color: #ffffff;
+            font-weight: 700;
+            text-align: left;
+            padding: 8px 10px;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+        }
+        table.slide-table td {
+            padding: 7px 10px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            color: #cbd5e1;
+            background: rgba(15, 23, 42, 0.5);
+        }
+        table.slide-table tr:nth-child(even) td {
+            background: rgba(30, 41, 59, 0.5);
+        }
+        .badge-pass {
+            background: #059669;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 8.5pt;
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .badge-must {
+            background: #dc2626;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 8pt;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .badge-should {
+            background: #d97706;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 8pt;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        /* Footer */
+        .slide-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(148, 163, 184, 0.2);
+            padding-top: 8px;
+            margin-top: 10px;
+            font-size: 9pt;
+            color: #64748b;
+        }
+        /* Cover Slide */
+        .slide-cover {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at center, #1e293b 0%, #0b0f19 80%);
+            padding: 30mm 20mm;
+        }
+        .cover-main-badge {
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 12pt;
+            font-weight: 700;
+            padding: 6px 18px;
+            border-radius: 20px;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .cover-h1 {
+            font-size: 28pt;
+            font-weight: 900;
+            color: #ffffff;
+            margin: 0 0 15px 0;
+            line-height: 1.2;
+            letter-spacing: 0.5px;
+        }
+        .cover-h2 {
+            font-size: 16pt;
+            font-weight: 500;
+            color: #94a3b8;
+            margin: 0 0 35px 0;
+        }
+        .cover-info-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            border-radius: 8px;
+            padding: 16px 30px;
+            display: inline-flex;
+            gap: 40px;
+            text-align: left;
+        }
+        .cover-info-item h4 {
+            margin: 0 0 4px 0;
+            font-size: 9.5pt;
+            color: #38bdf8;
+            text-transform: uppercase;
+        }
+        .cover-info-item p {
+            margin: 0;
+            font-size: 11pt;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SLIDE 0: COVER -->
+    <div class="slide slide-cover">
+        <div>
+            <div class="cover-main-badge">PRESENTASI SPESIFIKASI KEBUTUHAN SISTEM</div>
+            <h1 class="cover-h1">SPESIFIKASI KEBUTUHAN (PRD & SRS)<br>SISTEM RENTAL PLAYSTATION</h1>
+            <div class="cover-h2">Exito Playbox Management System — rpl-project-ps</div>
+            
+            <div class="cover-info-card">
+                <div class="cover-info-item">
+                    <h4>Pengembang / NIM</h4>
+                    <p>Maruf Syahbana (2024xx)</p>
+                </div>
+                <div class="cover-info-item">
+                    <h4>Peran Tim</h4>
+                    <p>Full-Stack & Scrum Master</p>
+                </div>
+                <div class="cover-info-item">
+                    <h4>Mitra Rental</h4>
+                    <p>Exito Playbox (Bpk. Hendra)</p>
+                </div>
+                <div class="cover-info-item">
+                    <h4>Status Rilis</h4>
+                    <p>v1.0.1 (Production Ready)</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer" style="width: 100%;">
+            <span>Praktikum Rekayasa Perangkat Lunak 2026</span>
+            <span>https://github.com/marufsyahbana2005/rpl-project-ps</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 1: PRD -->
+    <div class="slide">
+        <div class="slide-header">
+            <div class="slide-title-wrap">
+                <span class="slide-badge">SLIDE 1</span>
+                <h2 class="slide-title">Product Requirements Document (PRD)</h2>
+            </div>
+            <span class="slide-project-tag">Exito Playbox / PRD.md</span>
+        </div>
+        <div class="slide-body grid-2">
+            <!-- Kolom Kiri: Masalah & Peran -->
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                <div class="card card-accent-blue">
+                    <h3 class="card-title">📌 Latar Belakang & Masalah Mitra</h3>
+                    <div class="card-body">
+                        Pencatatan nota kertas pada 8 unit PlayStation di Exito Playbox rawan kesalahan manual saat kasir sibuk:
+                        <ul class="bullet-list" style="margin-top: 6px;">
+                            <li>Salah kalkulasi jam bermain & perselisihan denda keterlambatan (*overtime*).</li>
+                            <li>Ketiadaan visibilitas status unit kosong vs terpakai di meja kasir.</li>
+                            <li>Rekapitulasi keuangan harian memakan waktu berjam-jam setiap malam.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card card-accent-emerald">
+                    <h3 class="card-title">👥 Pengguna & Batasan Peran (*User Roles*)</h3>
+                    <div class="card-body">
+                        <ul class="bullet-list">
+                            <li><strong>Kasir / Operator:</strong> Membuka sesi sewa, memantau timer konsol aktif, dan menyelesaikan pembayaran denda.</li>
+                            <li><strong>Pemilik (Owner):</strong> Memantau omset harian/bulanan dan mengelola tarif resmi paket sewa.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan: Fitur MoSCoW -->
+            <div class="card card-accent-amber" style="justify-content: space-between;">
+                <div>
+                    <h3 class="card-title">🎯 Fitur per Prioritas (MoSCoW Matrix)</h3>
+                    <div class="card-body" style="margin-top: 8px;">
+                        <ul class="bullet-list">
+                            <li><strong style="color: #ef4444;">Must Have:</strong> Pencatatan sewa & timer otomatis, dasbor visual ketersediaan unit (Hijau = Kosong, Merah = Main), dan rekapitulasi omset otomatis.</li>
+                            <li><strong style="color: #f59e0b;">Should Have:</strong> Perhitungan denda otomatis (*grace period* 5 menit toleransi gratis, denda Rp 1.000/menit) dan validasi formulir wajib isi.</li>
+                            <li><strong style="color: #94a3b8;">Won't Have (Batasan):</strong> Integrasi gateway QRIS digital otomatis ditiadakan (pembayaran tetap tunai/transfer manual di kasir); tanpa pelacakan GPS fisik konsol.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="highlight-box">
+                    <strong>Artefak Sumber:</strong> Terdokumentasi lengkap pada berkas <code>PRD.md</code> di root repositori.
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer">
+            <span>Bagian I: Product Requirements Document</span>
+            <span>Halaman 1 dari 3</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 2: SRS -->
+    <div class="slide">
+        <div class="slide-header">
+            <div class="slide-title-wrap">
+                <span class="slide-badge">SLIDE 2</span>
+                <h2 class="slide-title">Software Requirements Specification (SRS)</h2>
+            </div>
+            <span class="slide-project-tag">Exito Playbox / docs/srs.md</span>
+        </div>
+        <div class="slide-body grid-2">
+            <!-- Kolom Kiri: Kebutuhan Fungsional -->
+            <div class="card card-accent-blue">
+                <h3 class="card-title">⚙️ Kebutuhan Fungsional Inti (KF)</h3>
+                <div class="card-body">
+                    <ul class="bullet-list">
+                        <li><strong>KF-01 (Must):</strong> Mengubah status konsol menjadi <code>terpakai</code> saat sewa dimulai dan <code>tersedia</code> saat selesai.</li>
+                        <li><strong>KF-02 (Must):</strong> Mengalkulasi durasi dan total biaya sewa secara otomatis berdasarkan paket jam resmi.</li>
+                        <li><strong>KF-03 (Should):</strong> Menghentikan timer dan menghitung denda keterlambatan jika $> 5$ menit (toleransi *grace period*).</li>
+                        <li><strong>KF-04 (Must):</strong> Menyajikan dasbor visual pemantauan status ketersediaan seluruh konsol secara real-time.</li>
+                        <li><strong>KF-08 (Should):</strong> Memvalidasi kelengkapan nama pelanggan sebelum transaksi disimpan ke basis data.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan: Kebutuhan Non-Fungsional -->
+            <div class="card card-accent-purple">
+                <h3 class="card-title">🛡️ Kebutuhan Non-Fungsional (KNF)</h3>
+                <div class="card-body">
+                    <ul class="bullet-list">
+                        <li><strong>KNF-01 (Kinerja):</strong> Dasbor ketersediaan konsol wajib terbuka dalam waktu &le; 2 detik pada komputer kasir.</li>
+                        <li><strong>KNF-02 (Keandalan):</strong> Pencadangan (*backup*) basis data SQLite otomatis minimal 1x sehari via skrip <code>cadangkan.py</code>.</li>
+                        <li><strong>KNF-03 (Keamanan RBAC):</strong> Menu kelola paket dan laporan keuangan hanya dapat diakses akun Owner (HTTP 403 Forbidden untuk kasir).</li>
+                        <li><strong>KNF-04 (Usabilitas):</strong> Antarmuka kasir intuitif, dapat dikuasai pegawai baru dalam pelatihan $\le 15$ menit.</li>
+                    </ul>
+                    <div class="highlight-box">
+                        <strong>Aturan Data Konfirmasi:</strong> Kebijakan *No Hard Delete* (retensi riwayat 3-5 tahun) dan integritas kunci asing <code>PRAGMA foreign_keys = ON</code>.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer">
+            <span>Bagian II: Software Requirements Specification</span>
+            <span>Halaman 2 dari 3</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: TRACEABILITY MATRIX -->
+    <div class="slide">
+        <div class="slide-header">
+            <div class="slide-title-wrap">
+                <span class="slide-badge">SLIDE 3</span>
+                <h2 class="slide-title">Matriks Keterlacakan (Traceability Matrix)</h2>
+            </div>
+            <span class="slide-project-tag">Verifikasi Kebutuhan ke Pengujian Otomatis</span>
+        </div>
+        <div class="slide-body">
+            <div class="card" style="padding: 12px 14px;">
+                <table class="slide-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">ID KF / KNF</th>
+                            <th style="width: 32%;">Deskripsi Kebutuhan PRD & SRS</th>
+                            <th style="width: 12%;">Prioritas</th>
+                            <th style="width: 28%;">Test Case Verifikasi Otomatis</th>
+                            <th style="width: 18%;">Status Kelulusan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>KF-01</strong></td>
+                            <td>Perubahan status konsol atomik 'terpakai' & 'tersedia'</td>
+                            <td><span class="badge-must">MUST</span></td>
+                            <td><code>TC-01, TC-02</code> (test_crud_konsol.py)</td>
+                            <td><span class="badge-pass">100% PASSED</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>KF-02</strong></td>
+                            <td>Kalkulasi durasi & tarif sewa otomatis per paket jam</td>
+                            <td><span class="badge-must">MUST</span></td>
+                            <td><code>TC-03, TC-04</code> (test_validasi.py)</td>
+                            <td><span class="badge-pass">100% PASSED</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>KF-03</strong></td>
+                            <td>Perhitungan denda keterlambatan (grace period 5 menit)</td>
+                            <td><span class="badge-should">SHOULD</span></td>
+                            <td><code>TC-05, TC-06</code> (test_transaksi_berelasi.py)</td>
+                            <td><span class="badge-pass">100% PASSED</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>KF-04</strong></td>
+                            <td>Dasbor visual monitoring status konsol real-time</td>
+                            <td><span class="badge-must">MUST</span></td>
+                            <td><code>TC-07</code> (test_alur_akses.py)</td>
+                            <td><span class="badge-pass">100% PASSED</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>KF-08</strong></td>
+                            <td>Validasi kelengkapan form kasir (nama_pelanggan wajib)</td>
+                            <td><span class="badge-should">SHOULD</span></td>
+                            <td><code>TC-09, D-01</code> (test_validasi.py)</td>
+                            <td><span class="badge-pass">100% PASSED</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>KNF-03</strong></td>
+                            <td>Keamanan RBAC: Kasir diblokir buka rute owner (HTTP 403)</td>
+                            <td><span class="badge-must">MUST</span></td>
+                            <td><code>TC-11</code> (test_autentikasi_peran.py)</td>
+                            <td><span class="badge-pass">100% PASSED</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 10pt; color: #94a3b8;">
+                    <span>✓ Seluruh 22 test case otomatis Pytest (38 skenario) berstatus <strong>100% Passed</strong>.</span>
+                    <span>Skor Usabilitas UAT: <strong>87.5 / 100 (Grade A+ Excellent)</strong></span>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer">
+            <span>Bagian III: Matriks Keterlacakan & Validasi Pengujian</span>
+            <span>Halaman 3 dari 3</span>
+        </div>
+    </div>
+
+</body>
+</html>
