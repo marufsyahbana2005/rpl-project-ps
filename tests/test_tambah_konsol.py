@@ -10,8 +10,15 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from app import app
 from models import init_db
 
-init_db("test_rental.db")
-app.config["DATABASE_NAME"] = "test_rental.db"
+TEST_DB = "test_tambah.db"
+if os.path.exists(TEST_DB):
+    try:
+        os.remove(TEST_DB)
+    except Exception:
+        pass
+
+init_db(TEST_DB)
+app.config["DATABASE_NAME"] = TEST_DB
 client = app.test_client()
 
 # Inisialisasi sesi login peran owner (Langkah 12)
@@ -19,11 +26,18 @@ with client.session_transaction() as sess:
     sess["user_id"] = 1
     sess["username"] = "owner_test"
     sess["role"] = "owner"
+    sess["_csrf_token"] = "valid_csrf_token"
+
+def post_csrf(c, url, data=None, **kwargs):
+    d = dict(data or {})
+    d["csrf_token"] = "valid_csrf_token"
+    return c.post(url, data=d, **kwargs)
 
 print("--- MENJALANKAN 5 PENGUJIAN FORM TAMBAH KONSOL ---")
 
 # Uji 1: Semua kolom valid
-res1 = client.post(
+res1 = post_csrf(
+    client,
     "/consoles/tambah",
     data={"kode_konsol": "PS4-99", "jenis_konsol": "PS4"},
     follow_redirects=True,
@@ -34,7 +48,8 @@ assert "berhasil ditambahkan" in res1.text
 print("[LULUS] Uji 1: Semua kolom valid -> Tersimpan dan muncul pesan sukses.")
 
 # Uji 2: Kode kosong
-res2 = client.post(
+res2 = post_csrf(
+    client,
     "/consoles/tambah", data={"kode_konsol": "", "jenis_konsol": "PS4"}
 )
 assert res2.status_code == 200
@@ -42,7 +57,8 @@ assert "Kode konsol wajib diisi" in res2.text
 print("[LULUS] Uji 2: Kode kosong -> Ditolak dengan pesan galat.")
 
 # Uji 3: Kode terlalu pendek (< 4 karakter)
-res3 = client.post(
+res3 = post_csrf(
+    client,
     "/consoles/tambah", data={"kode_konsol": "PS", "jenis_konsol": "PS4"}
 )
 assert res3.status_code == 200
@@ -53,7 +69,8 @@ print(
 )
 
 # Uji 4: Jenis konsol tidak valid
-res4 = client.post(
+res4 = post_csrf(
+    client,
     "/consoles/tambah", data={"kode_konsol": "XB-01", "jenis_konsol": "NINTENDO"}
 )
 assert res4.status_code == 200
@@ -61,7 +78,8 @@ assert "Jenis konsol tidak valid" in res4.text
 print("[LULUS] Uji 4: Jenis konsol tidak valid -> Ditolak.")
 
 # Uji 5: Kode konsol duplikat (sudah ada)
-res5 = client.post(
+res5 = post_csrf(
+    client,
     "/consoles/tambah",
     data={"kode_konsol": "PS4-99", "jenis_konsol": "PS4"},
 )

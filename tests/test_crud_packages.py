@@ -29,11 +29,18 @@ with client.session_transaction() as sess:
     sess["user_id"] = 1
     sess["username"] = "owner_test"
     sess["role"] = "owner"
+    sess["_csrf_token"] = "valid_csrf_token"
+
+def post_csrf(c, url, data=None, **kwargs):
+    d = dict(data or {})
+    d["csrf_token"] = "valid_csrf_token"
+    return c.post(url, data=d, **kwargs)
 
 print("--- MENJALANKAN UJI CRUD PACKAGES (ENTITAS KEDUA) ---")
 
 # 1. UJI TAMBAH PAKET VALID
-res1 = client.post(
+res1 = post_csrf(
+    client,
     "/packages/tambah",
     data={
         "nama_paket": "Paket PS4 1 Jam Reguler",
@@ -50,7 +57,8 @@ assert "berhasil ditambahkan" in res1.text
 print("[LULUS] PKG-1: Tambah paket valid berhasil disimpan.")
 
 # 2. UJI TAMBAH DENGAN HARGA NEGATIF (Ditolak)
-res2 = client.post(
+res2 = post_csrf(
+    client,
     "/packages/tambah",
     data={
         "nama_paket": "Paket Gagal Harga",
@@ -64,7 +72,8 @@ assert "tidak boleh bernilai negatif" in res2.text
 print("[LULUS] PKG-2: Harga negatif ditolak sistem.")
 
 # 3. UJI TAMBAH DENGAN DURASI <= 0 (Ditolak)
-res3 = client.post(
+res3 = post_csrf(
+    client,
     "/packages/tambah",
     data={
         "nama_paket": "Paket Gagal Durasi",
@@ -78,7 +87,8 @@ assert "lebih besar dari 0" in res3.text
 print("[LULUS] PKG-3: Durasi 0 menit ditolak sistem.")
 
 # 4. UJI TAMBAH DUPLIKAT NAMA
-res4 = client.post(
+res4 = post_csrf(
+    client,
     "/packages/tambah",
     data={
         "nama_paket": "Paket PS4 1 Jam Reguler",
@@ -92,7 +102,8 @@ assert "sudah digunakan" in res4.text
 print("[LULUS] PKG-4: Nama paket duplikat ditolak sistem.")
 
 # 5. UJI UBAH PAKET
-res5 = client.post(
+res5 = post_csrf(
+    client,
     "/packages/1/ubah",
     data={
         "nama_paket": "Paket PS4 1 Jam (Promo)",
@@ -108,7 +119,7 @@ assert "Paket PS4 1 Jam (Promo)" in res5.text
 print("[LULUS] PKG-5: Ubah paket sewa berhasil diperbarui.")
 
 # 6. UJI HAPUS PAKET BEBAS TRANSAKSI
-res6 = client.post("/packages/1/hapus", follow_redirects=True)
+res6 = post_csrf(client, "/packages/1/hapus", follow_redirects=True)
 assert res6.status_code == 200
 assert "berhasil dihapus" in res6.text
 print("[LULUS] PKG-6: Hapus paket sewa via POST berhasil.")

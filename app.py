@@ -8,6 +8,9 @@ Mencakup:
 """
 
 import os
+import time
+import secrets
+import logging
 from functools import wraps
 from flask import Flask, redirect, url_for, render_template, request, flash, session
 from models import init_db
@@ -34,14 +37,151 @@ from services import (
     get_user_by_username,
 )
 
+# Konfigurasi Logging Audit Keamanan (Langkah 12)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+)
+logger = logging.getLogger("exito_playbox_security")
+
 # Inisialisasi Aplikasi Flask
 app = Flask(__name__)
 
-# Konfigurasi Kunci Rahasia dari Variabel Lingkungan
-app.config["SECRET_KEY"] = os.environ.get(
-    "SECRET_KEY", "exito-playbox-dev-secret-key-2026-rentalsecure"
+# Konfigurasi Kunci Rahasia dan Pengerasan Lingkungan Produksi (Langkah 13)
+is_production = os.environ.get("FLASK_ENV") == "production"
+secret_key_env = os.environ.get("SECRET_KEY")
+
+if is_production and not secret_key_env:
+    raise RuntimeError(
+        "KRITIS: Aplikasi menolak berjalan pada mode produksi tanpa variabel lingkungan SECRET_KEY!"
+    )
+
+app.config["SECRET_KEY"] = (
+    secret_key_env or "exito-playbox-dev-secret-key-2026-rentalsecure"
 )
 app.config["DATABASE_NAME"] = os.environ.get("DATABASE_NAME", "rental.db")
+
+# Konfigurasi Atribut Keamanan Cookie Sesi (Langkah 13 / OWASP A05)
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = is_production
+
+
+# ============================================================================
+# PERLINDUNGAN CSRF TOKEN (LANGKAH 11 / JOBSHEET 12)
+# ============================================================================
+
+def get_csrf_token():
+    """
+    Menghasilkan atau mengambil token anti-CSRF kriptografis aman untuk sesi aktif.
+    """
+    if "_csrf_token" not in session:
+        session["_csrf_token"] = secrets.token_hex(32)
+    return session["_csrf_token"]
+
+# Daftarkan fungsi token CSRF ke Jinja2 Template Globals
+app.jinja_env.globals["csrf_token"] = get_csrf_token
+
+
+@app.before_request
+def csrf_protect_middleware():
+    """
+    Memverifikasi keberadaan dan keabsahan token CSRF pada semua permintaan mutasi data (POST, PUT, DELETE, PATCH).
+    Jika token tidak cocok atau tidak ada, tolak dengan respons HTTP 400 Bad Request.
+    """
+    if request.method in ("POST", "PUT", "DELETE", "PATCH"):
+        token = request.form.get("csrf_token") or request.headers.get("X-CSRFToken")
+        sess_token = session.get("_csrf_token")
+
+        if not sess_token or not token or not secrets.compare_digest(sess_token, token):
+            logger.warning(
+                "Validasi CSRF gagal untuk IP %s pada rute %s",
+                request.remote_addr,
+                request.path,
+            )
+            return (
+                render_template(
+                    "400_csrf.html",
+                    message="Validasi CSRF Token gagal atau token hilang. Permintaan mutasi data ditolak.",
+                ),
+                400,
+            )
+
+
+# ============================================================================
+# PEMBATASAN PERCOBAAN LOGIN / RATE LIMITING (LANGKAH 12 / JOBSHEET 12)
+# ============================================================================
+
+FAILED_LOGIN_ATTEMPTS = {}  # Format: key: (ip, username), value: [timestamps]
+MAX_LOGIN_ATTEMPTS = 5
+LOCKOUT_WINDOW_SECONDS = 300  # 5 Menit
+
+
+def is_login_rate_limited(ip, username):
+    """
+    Memeriksa apakah kombinasi IP dan username sedang terkunci akibat melebihi batas kegagalan.
+    """
+    now = time.time()
+    key = (ip, (username or "").strip().lower())
+    attempts = FAILED_LOGIN_ATTEMPTS.get(key, [])
+
+    # Filter percobaan yang masih berada di dalam jendela waktu 5 menit
+    valid_attempts = [t for t in attempts if (now - t) < LOCKOUT_WINDOW_SECONDS]
+    FAILED_LOGIN_ATTEMPTS[key] = valid_attempts
+
+    if len(valid_attempts) >= MAX_LOGIN_ATTEMPTS:
+        oldest = valid_attempts[0]
+        remaining = int(LOCKOUT_WINDOW_SECONDS - (now - oldest))
+        return True, max(1, remaining)
+    return False, 0
+
+
+def record_login_failure(ip, username):
+    """
+    Mencatat waktu kegagalan login dan menerbitkan audit log tanpa mencatat kata sandi plaintext.
+    """
+    now = time.time()
+    key = (ip, (username or "").strip().lower())
+    attempts = FAILED_LOGIN_ATTEMPTS.get(key, [])
+    attempts.append(now)
+    FAILED_LOGIN_ATTEMPTS[key] = attempts
+    logger.warning(
+        "Percobaan login gagal untuk nama pengguna '%s' dari IP %s (Kegagalan %d/%d)",
+        username,
+        ip,
+        len(attempts),
+        MAX_LOGIN_ATTEMPTS,
+    )
+
+
+def clear_login_failures(ip, username):
+    """
+    Membersihkan riwayat kegagalan saat login berhasil.
+    """
+    key = (ip, (username or "").strip().lower())
+    if key in FAILED_LOGIN_ATTEMPTS:
+        del FAILED_LOGIN_ATTEMPTS[key]
+    logger.info(
+        "Login berhasil untuk pengguna '%s' dari IP %s",
+        username,
+        ip,
+    )
+
+
+# ============================================================================
+# SECURITY HTTP HEADERS (LANGKAH 13 / OWASP A05)
+# ============================================================================
+
+@app.after_request
+def apply_security_headers(response):
+    """
+    Menyuntikkan HTTP Security Headers esensial untuk mencegah MIME-sniffing,
+    Clickjacking, dan kebocoran referrer.
+    """
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
 
 
 # ============================================================================
@@ -132,10 +272,12 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """
-    Langkah 4 (Siklus 2): Halaman dan aksi masuk sistem.
-    - Menolak user enumeration (pesan galat netral identik).
-    - session.clear() sebelum sesi diisi.
-    - Memvalidasi parameter next (anti open-redirect).
+    Langkah 4 (Siklus 2) & Langkah 12 (Siklus 4):
+    Halaman dan aksi masuk sistem dengan proteksi:
+    - Pembatasan laju (Rate Limiting maks 5x gagal / 5 menit -> HTTP 429).
+    - Pesan galat netral identik (anti user enumeration).
+    - Pembersihan sesi sebelum diisi dan regenerasi token CSRF.
+    - Sanitasi parameter next (anti open redirect).
     """
     if session.get("user_id"):
         return redirect(url_for("daftar_sewa"))
@@ -145,9 +287,22 @@ def login():
     username = ""
 
     if request.method == "POST":
+        client_ip = request.remote_addr or "127.0.0.1"
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
 
+        # 1. Periksa batas percobaan login gagal (Rate Limiting)
+        limited, sisa_detik = is_login_rate_limited(client_ip, username)
+        if limited:
+            error = f"Terlalu banyak percobaan login gagal. Akun/IP Anda terkunci sementara selama {sisa_detik} detik."
+            return (
+                render_template(
+                    "login.html", error=error, username=username, next_page=next_page
+                ),
+                429,
+            )
+
+        # 2. Verifikasi Kredensial
         user, error_msg = authenticate_user(
             username=username,
             password=password,
@@ -155,10 +310,12 @@ def login():
         )
 
         if user:
+            clear_login_failures(client_ip, username)
             session.clear()
             session["user_id"] = user["id"]
             session["username"] = user["username"]
             session["role"] = user["role"]
+            session["_csrf_token"] = secrets.token_hex(32)
 
             flash(
                 f"Selamat datang kembali, {user['username']}! Anda berhasil masuk sebagai {user['role'].upper()}.",
@@ -169,6 +326,7 @@ def login():
                 return redirect(next_page)
             return redirect(url_for("daftar_sewa"))
         else:
+            record_login_failure(client_ip, username)
             error = error_msg
 
     return render_template(
@@ -179,10 +337,11 @@ def login():
 @app.route("/logout", methods=["POST"])
 def logout():
     """
-    Langkah 4 (Siklus 2): Aksi keluar sistem.
-    Hanya menerima metode POST guna mencegah serangan logout paksa via CSRF pre-fetch.
+    Langkah 4 (Siklus 2) & Langkah 11: Aksi keluar sistem.
+    Hanya menerima metode POST terproteksi token CSRF.
     """
     session.clear()
+    session["_csrf_token"] = secrets.token_hex(32)
     flash("Anda telah keluar dari sistem secara aman.", "info")
     return redirect(url_for("login"))
 

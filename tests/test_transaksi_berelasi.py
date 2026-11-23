@@ -53,6 +53,12 @@ with client.session_transaction() as sess:
     sess["user_id"] = 1
     sess["username"] = "kasir1"
     sess["role"] = "owner"
+    sess["_csrf_token"] = "valid_csrf_token"
+
+def post_csrf(c, url, data=None, **kwargs):
+    d = dict(data or {})
+    d["csrf_token"] = "valid_csrf_token"
+    return c.post(url, data=d, **kwargs)
 
 print("--- MENJALANKAN PENGUJIAN MODUL BERELASI (JOBSHEET 10) ---")
 
@@ -61,7 +67,8 @@ print("--- MENJALANKAN PENGUJIAN MODUL BERELASI (JOBSHEET 10) ---")
 # ============================================================================
 
 # Uji 1: Semua kolom valid
-res1 = client.post(
+res1 = post_csrf(
+    client,
     "/sewa/buka",
     data={"nama_pelanggan": "Andi Saputra", "console_id": "1", "package_id": "1", "status_bayar": "open_bill"},
     follow_redirects=True,
@@ -72,7 +79,8 @@ assert "berhasil dibuka" in res1.text
 print("[LULUS] Uji 1: Semua kolom valid -> Transaksi tersimpan dan muncul di daftar.")
 
 # Uji 2: Induk konsol belum dipilih
-res2 = client.post(
+res2 = post_csrf(
+    client,
     "/sewa/buka",
     data={"nama_pelanggan": "Budi", "console_id": "", "package_id": "1"},
 )
@@ -81,7 +89,8 @@ assert "Pilih unit konsol yang valid" in res2.text
 print("[LULUS] Uji 2: Induk konsol kosong ditolak.")
 
 # Uji 3: Induk paket sewa belum dipilih
-res3 = client.post(
+res3 = post_csrf(
+    client,
     "/sewa/buka",
     data={"nama_pelanggan": "Budi", "console_id": "2", "package_id": ""},
 )
@@ -90,7 +99,8 @@ assert "Pilih paket sewa yang valid" in res3.text
 print("[LULUS] Uji 3: Induk paket kosong ditolak.")
 
 # Uji 4: Nama pelanggan kosong
-res4 = client.post(
+res4 = post_csrf(
+    client,
     "/sewa/buka",
     data={"nama_pelanggan": "", "console_id": "2", "package_id": "1"},
 )
@@ -99,7 +109,8 @@ assert "Nama pelanggan wajib diisi" in res4.text
 print("[LULUS] Uji 4: Nama pelanggan kosong ditolak.")
 
 # Uji 5: Input ID bukan angka
-res5 = client.post(
+res5 = post_csrf(
+    client,
     "/sewa/buka",
     data={"nama_pelanggan": "Budi", "console_id": "abc", "package_id": "1"},
 )
@@ -108,7 +119,8 @@ assert "Pilih unit konsol yang valid" in res5.text
 print("[LULUS] Uji 5: Input ID non-numerik ditolak.")
 
 # Uji 6: ID induk 999 (tidak ada di database) dikirim manual
-res6 = client.post(
+res6 = post_csrf(
+    client,
     "/sewa/buka",
     data={"nama_pelanggan": "Hacker", "console_id": "999", "package_id": "1"},
 )
@@ -159,7 +171,7 @@ print(f"[BUKTI 3] Transaksi gagal: Jumlah baris transaksi tetap {count_trx_akhir
 print("\n--- UJI PROTEKSI FOREIGN KEY (LANGKAH 6) ---")
 
 # Hapus konsol ID 1 yang sudah memiliki transaksi sewa (Andi Saputra)
-res_del_used = client.post("/consoles/1/hapus", follow_redirects=True)
+res_del_used = post_csrf(client, "/consoles/1/hapus", follow_redirects=True)
 assert res_del_used.status_code == 200
 assert "tidak dapat dihapus karena memiliki" in res_del_used.text
 print("[LULUS] Hapus unit konsol yang sudah dipakai sewa ditolak secara ramah.")
@@ -215,7 +227,7 @@ print("[LULUS] Penyaringan: Pencarian dan filter status bayar berhasil digabungk
 print("\n--- UJI PENGHENTIAN SEWA & PERHITUNGAN DENDA (LANGKAH 16) ---")
 
 # 1. Penyelesaian sesi sewa normal via POST /sewa/<id>/selesai
-res_selesai = client.post("/sewa/1/selesai", follow_redirects=True)
+res_selesai = post_csrf(client, "/sewa/1/selesai", follow_redirects=True)
 assert res_selesai.status_code == 200
 assert "berhasil diselesaikan" in res_selesai.text
 
