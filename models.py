@@ -6,7 +6,7 @@ Mengelola koneksi SQLite, penegakan integritas foreign keys, dan inisialisasi sk
 import os
 import sqlite3
 
-DATABASE_NAME = os.environ.get("DATABASE_NAME", "rental.db")
+DATABASE_NAME = os.environ.get("TOKO_DB", os.environ.get("DATABASE_NAME", "rental.db"))
 SCHEMA_PATH = os.path.join("docs", "desain", "schema.sql")
 
 
