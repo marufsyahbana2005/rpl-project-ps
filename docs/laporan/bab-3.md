@@ -72,7 +72,7 @@ Diagram use case memetakan interaksi antara dua aktor utama: **Kasir / Operator*
 - **UC-02 (Kelola Penghentian dan Denda):** Kasir memilih transaksi aktif $\rightarrow$ sistem mengevaluasi durasi terpakai terhadap paket $\rightarrow$ jika keterlambatan $> 5$ menit (*grace period* terlewati), denda dihitung proporsional per 15/30 menit $\rightarrow$ kasir menerima pembayaran $\rightarrow$ unit konsol kembali 'tersedia'.
 - **UC-03 (Pantau Dasbor Unit):** Dasbor melakukan *HTTP polling* berkala setiap 10 detik ke server untuk menyajikan warna status unit secara akurat bagi seluruh operator.
 - **UC-04 (Lihat Laporan Pendapatan):** Pemilik memilih filter periode tanggal $\rightarrow$ sistem mengagregasi total transaksi berstatus 'lunas' $\rightarrow$ layar menampilkan total omset paket, denda, omset bersih, dan kontribusi per unit PlayStation.
-- **UC-05 (Telusuri Riwayat Transaksi):** Pemilik dan kasir menelusuri data audit transaksi berdasarkan nama penyewa atau tanggal tertentu dengan paginasi terstruktur.
+- **UC-05 (Telusuri Riwayat Transaksi):** Pemilik dan kasir menelusuri data audit transaksi berdasarkan nama pelanggan atau tanggal tertentu dengan paginasi terstruktur.
 
 ---
 
@@ -131,8 +131,30 @@ Sistem diverifikasi oleh 11 kasus uji (*test case*) utama yang mencakup kondisi 
 - **TC-07 (KF-04 / KNF-01):** Pengujian sinkronisasi dasbor visual via polling 10 detik dengan waktu muat $\le 2$ detik.
 - **TC-08 (KF-06):** Verifikasi kalkulasi omset laporan harian di mana transaksi batal tidak terhitung ke pendapatan.
 - **TC-09 (KF-08):** Penolakan penyimpanan data transaksi saat kolom nama pelanggan dikosongkan.
-- **TC-10 (KF-07):** Ketepatan pemfilteran data riwayat transaksi berdasarkan nama penyewa.
+- **TC-10 (KF-07):** Ketepatan pemfilteran data riwayat transaksi berdasarkan nama pelanggan.
 - **TC-11 (KNF-03):** Pemblokiran akses rute laporan keuangan bagi pengguna dengan peran kasir (HTTP 403 Forbidden).
 
 ### 3.6.3 Matriks Keterlacakan Komprehensif
 Seluruh kebutuhan fungsional dan non-fungsional terpetakan secara utuh ke use case, halaman wireframe, prioritas MoSCoW, dan nomor kasus uji verifikasi (sebagaimana tertuang pada Tabel Matriks Keterlacakan di `docs/srs.md` dan `docs/pengujian/rencana-uji.md`), membuktikan bahwa tidak ada kebutuhan yang tertinggal (*untested*) dan tidak ada pengujian di luar ruang lingkup yang disepakati bersama klien.
+
+---
+
+## 3.7 Perubahan terhadap Rancangan Awal dan Sinkronisasi Pengujian
+
+Selama proses implementasi pada Bab 4, terdapat sejumlah penyesuaian teknis terhadap rancangan awal yang tercantum pada Bab 3. Penyesuaian ini dipicu oleh hasil pengujian unit, temuan audit keamanan OWASP, penutupan laporan cacat melalui *Test-Driven Development* (TDD), serta optimalisasi beban server kasir. 
+
+Tabel 3.5 merangkum seluruh perubahan arsitektural dan rancangan detail (Lampiran B.4).
+
+**Tabel 3.5 Matriks Perubahan terhadap Rancangan Awal (Bab 3 vs Bab 4)**
+
+| Komponen Rancangan | Rancangan Awal (Bab 3) | Realisasi Implementasi (Bab 4) | Alasan Perubahan | Kategori Perubahan |
+| :--- | :--- | :--- | :--- | :---: |
+| **Penamaan Kolom Kueri JOIN Transaksi** | Kueri SQL JOIN mengasumsikan kolom nama konsol adalah `c.nama_konsol`. | Disesuaikan menjadi `c.kode_konsol` sesuai kamus data skema basis data SQLite. | Menjaga konsistensi DDL SQLite dan mencegah kesalahan `sqlite3.OperationalError: no such column`. | **Perbaikan** |
+| **Sanitasi Masukan Nama Pelanggan Transaksi** | Validasi masukan mengasumsikan tipe selalu teks: `nama_pelanggan.strip()`. | Normalisasi eksplisit via `str(nama_pelanggan).strip()` pada `_validate_transaction_payload()`. | Penutupan Cacat D-01: payload non-string (seperti integer via dev tools) sebelumnya memicu eksepsi 500 `AttributeError`. | **Penyempurnaan** |
+| **Integritas Keunikan Nama Paket Sewa** | Batasan `UNIQUE(nama_paket)` standar SQLite yang bersifat *case-sensitive*. | Validasi kueri `LOWER(nama_paket) = LOWER(?)` sebelum operasi INSERT maupun UPDATE di `services.py`. | Penutupan Cacat D-02: mencegah data ganda akibat variasi huruf kapital (misal "Paket Malam" vs "paket malam"). | **Penyempurnaan** |
+| **Proteksi Mutasi Status Konsol Terpakai** | Pemilik diperbolehkan mengubah status konsol secara manual ke `'maintenance'` kapan saja. | Penolakan mutasi manual (HTTP 400) bila konsol sedang berada dalam status `'terpakai'`. | Penutupan Cacat D-03: melindungi konsistensi status operasional konsol yang sedang disewa aktif oleh pelanggan. | **Perbaikan** |
+| **Mekanisme Perlindungan CSRF** | Direncanakan menggunakan pustaka pihak ketiga `Flask-WTF`. | Membangun modul generator token CSRF internal berbasis sesi dan middleware `@app.before_request`. | Menghindari *dependency bloat*, memangkas jejak memori runner di mesin kasir, dan kontrol penuh atas pesan galat 400. | **Simplifikasi** |
+| **Cakupan Rencana Pengujian (3.6 vs 4.4)** | Rencana pengujian awal memuat 11 kasus uji manual dasar (TC-01 s/d TC-11). | Realisasi mencakup 22 test case otomatis pytest (38 *passed*), 3 uji cacat TDD, uji alur HTTP, dan matriks RBAC. | Peningkatan rigor pengujian otomatis, jaminan regresi tanpa cacat, dan verifikasi batas masukan menggunakan fixture terisolasi. | **Penyempurnaan** |
+
+Terkait sinkronisasi rencana pengujian, seluruh 11 kasus uji yang dirancang pada Subbab 3.6 telah terbukti tercakup secara penuh dalam pengujian otomatis di Subbab 4.4 (misalnya TC-01 dan TC-02 tercakup pada `test_crud_konsol.py` dan `test_alur_akses.py`; TC-05 dan TC-06 tercakup pada `test_validasi.py` dan `test_transaksi_berelasi.py`; TC-11 tercakup pada pengujian matriks RBAC). Penambahan 11 test case baru pada Subbab 4.4 dilakukan secara terencana untuk memvalidasi kasus uji batas ekstrem, kekebalan injeksi SQL berparameter, proteksi token CSRF, serta verifikasi penutupan 3 cacat perangkat lunak (D-01, D-02, D-03).
+
