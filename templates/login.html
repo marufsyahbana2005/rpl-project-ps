@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Masuk — Exito Playbox{% endblock %}
+
+{% block content %}
+<div style="max-width: 420px; margin: 3rem auto;">
+    <div class="card" style="padding: 2.5rem 2rem; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎮</div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;">Exito Playbox</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Masuk ke Sistem Manajemen Rental PlayStation</p>
+        </div>
+
+        {% if error %}
+            <div class="alert alert-danger" role="alert" style="margin-bottom: 1.5rem; font-size: 0.9rem; padding: 0.75rem 1rem; border-radius: 8px;">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form action="{{ url_for('login', next=next_page) }}" method="POST" novalidate>
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label for="username" style="display: block; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--text-main);">
+                    Nama Pengguna (Username)
+                </label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    class="form-control" 
+                    placeholder="Masukkan nama pengguna" 
+                    value="{{ username|default('') }}" 
+                    required 
+                    autofocus 
+                    autocomplete="username"
+                    style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.95rem;"
+                >
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="password" style="display: block; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--text-main);">
+                    Kata Sandi (Password)
+                </label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-control" 
+                    placeholder="Masukkan kata sandi" 
+                    required 
+                    autocomplete="current-password"
+                    style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.95rem;"
+                >
+            </div>
+
+            <button 
+                type="submit" 
+                class="btn btn-primary" 
+                style="width: 100%; padding: 0.75rem; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: background-color 0.2s;"
+            >
+                Masuk ke Sistem
+            </button>
+        </form>
+
+        <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); text-align: center; font-size: 0.8rem; color: var(--text-muted);">
+            <div>Peran Akses: <strong>Kasir</strong> (Operasional) & <strong>Owner</strong> (Administratif)</div>
+            <div style="margin-top: 0.25rem;">Gunakan akun resmi yang telah didaftarkan administrator.</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
