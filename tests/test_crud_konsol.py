@@ -39,11 +39,18 @@ with client.session_transaction() as sess:
     sess["user_id"] = 1
     sess["username"] = "owner_test"
     sess["role"] = "owner"
+    sess["_csrf_token"] = "valid_csrf_token"
+
+def post_csrf(c, url, data=None, **kwargs):
+    d = dict(data or {})
+    d["csrf_token"] = "valid_csrf_token"
+    return c.post(url, data=d, **kwargs)
 
 print("--- MENJALANKAN PENGUJIAN SIKLUS 4 & 5 ---")
 
 # 1. UJI F4: Ubah data berhasil
-res_ubah = client.post(
+res_ubah = post_csrf(
+    client,
     "/consoles/1/ubah",
     data={"kode_konsol": "PS4-EDITED", "jenis_konsol": "PS4", "status": "maintenance"},
     follow_redirects=True,
@@ -54,7 +61,8 @@ assert "berhasil diperbarui" in res_ubah.text
 print("[LULUS] F4-1: Ubah data berhasil -> Tersimpan dan muncul flash sukses.")
 
 # 2. UJI F4: Ubah menjadi kode yang sudah ada (duplikat) ditolak
-res_dupl = client.post(
+res_dupl = post_csrf(
+    client,
     "/consoles/1/ubah",
     data={"kode_konsol": "PS5-DUPL", "jenis_konsol": "PS4", "status": "tersedia"},
 )
@@ -69,7 +77,7 @@ assert "tidak ditemukan" in res_404.text
 print("[LULUS] F4-3: Akses /consoles/999/ubah mengembalikan 404 Not Found.")
 
 # 4. UJI F5: Hapus via POST untuk unit yang belum dipakai transaksi
-res_hapus = client.post("/consoles/2/hapus", follow_redirects=True)
+res_hapus = post_csrf(client, "/consoles/2/hapus", follow_redirects=True)
 assert res_hapus.status_code == 200
 assert "berhasil dihapus" in res_hapus.text
 print("[LULUS] F5-1: Hapus via POST berhasil untuk data bebas transaksi.")
@@ -93,13 +101,14 @@ conn.execute(
 conn.commit()
 conn.close()
 
-res_hapus_fk = client.post("/consoles/1/hapus", follow_redirects=True)
+res_hapus_fk = post_csrf(client, "/consoles/1/hapus", follow_redirects=True)
 assert res_hapus_fk.status_code == 200
 assert "tidak dapat dihapus karena memiliki 1 riwayat transaksi" in res_hapus_fk.text
 print("[LULUS] F5-3: Proteksi Foreign Key berhasil -> Penghapusan ditolak ramah tanpa crash.")
 
 # 7. UJI KEAMANAN 1: SQL Injection (Robert'); DROP TABLE consoles;--)
-res_sqli = client.post(
+res_sqli = post_csrf(
+    client,
     "/consoles/tambah",
     data={"kode_konsol": "Robert'); DROP TABLE consoles;--", "jenis_konsol": "PS4"},
     follow_redirects=True,
@@ -119,7 +128,8 @@ conn.close()
 print("[LULUS] Keamanan 1: SQL Injection dicegah oleh SQL berparameter. Tabel tetap utuh.")
 
 # 8. UJI KEAMANAN 2: XSS Escape Otomatis Jinja2 (<b>tes</b>)
-res_xss = client.post(
+res_xss = post_csrf(
+    client,
     "/consoles/tambah",
     data={"kode_konsol": "<b>TEST-XSS</b>", "jenis_konsol": "PS5"},
     follow_redirects=True,

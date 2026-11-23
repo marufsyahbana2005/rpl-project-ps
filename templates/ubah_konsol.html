@@ -20,6 +20,7 @@
     {% endif %}
 
     <form action="{{ url_for('ubah_konsol', id=console['id']) }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div style="margin-bottom: 1.25rem;">
             <label for="kode_konsol" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">
                 Kode Konsol (*Wajib):
@@ -74,6 +75,7 @@
         </div>
         <form action="{{ url_for('hapus_konsol', id=console['id']) }}" method="POST"
               onsubmit="return confirm('Apakah Anda yakin ingin menghapus unit konsol ini secara permanen?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="btn btn-danger btn-sm">[X] Hapus Unit</button>
         </form>
     </div>
