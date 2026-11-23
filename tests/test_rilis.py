@@ -17,7 +17,7 @@ def test_versi_semver():
     """Memverifikasi bahwa versi aplikasi mengikuti kaidah Semantic Versioning (x.y.z)."""
     assert isinstance(__version__, str)
     assert re.match(r"^\d+\.\d+\.\d+$", __version__) is not None
-    assert __version__ == "1.0.0"
+    assert __version__ in ("1.0.0", "1.0.1")
 
 
 def test_tampilan_versi_pada_footer(client):

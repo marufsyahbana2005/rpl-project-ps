@@ -4,6 +4,16 @@ Format penulisan catatan perubahan ini mengikuti panduan [Keep a Changelog](http
 
 ---
 
+## [1.0.1] — 2026-11-24
+
+Rilis tambalan (*patch release*) menindaklanjuti umpan balik pengujian penerimaan pengguna (UAT) butir `TR-02`.
+
+### Diperbaiki (Fixed)
+- Penyempurnaan pesan konfirmasi visual (*JavaScript confirmation prompt*) saat kasir menyelesaikan sesi sewa untuk mencegah penghentian transaksi sewa tidak sengaja: *"Apakah Anda yakin ingin menyelesaikan sesi sewa pelanggan '...'? Unit konsol akan otomatis kembali berstatus TERSEDIA."*
+- Peningkatan kejelasan label aksi operasional pada tabel transaksi aktif.
+
+---
+
 ## [1.0.0] — 2026-11-23
 
 Rilis versi produksi perdana (**v1.0.0**) Sistem Manajemen Rental PlayStation **Exito Playbox** (`rpl-project-ps`). Sistem dirancang untuk membantu operasional rental dalam pencatatan sewa, pemantauan status konsol, kalkulasi tarif dan denda, serta pengamanan hak akses pengguna.
