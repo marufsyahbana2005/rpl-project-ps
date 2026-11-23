@@ -1,7 +1,10 @@
 """
 app.py — Titik Masuk Utama Aplikasi Web Flask Exito Playbox
 Mengelola inisialisasi aplikasi, routing antarmuka, dan penanganan permintaan HTTP.
-Mencakup modul entitas pertama (consoles) dan entitas kedua (packages).
+Mencakup:
+- Entitas Pertama: consoles (Unit Konsol)
+- Entitas Kedua: packages (Paket Sewa)
+- Entitas Berelasi & Transaksi: transactions (Sesi Sewa Konsol) — Jobsheet 10
 """
 
 import os
@@ -13,11 +16,17 @@ from services import (
     get_console_by_id,
     update_console,
     delete_console,
+    get_available_consoles,
     get_all_packages,
     create_package,
     get_package_by_id,
     update_package,
     delete_package,
+    get_active_packages,
+    get_all_transactions,
+    get_transaction_by_id,
+    create_transaction,
+    finish_transaction,
 )
 
 # Inisialisasi Aplikasi Flask
@@ -37,7 +46,7 @@ def index():
 
 
 # ============================================================================
-# RUTE ENTITAS PERTAMA: CONSOLES (UNIT KONSOL)
+# 1. RUTE ENTITAS PERTAMA: CONSOLES (UNIT KONSOL)
 # ============================================================================
 
 @app.route("/consoles")
@@ -135,7 +144,7 @@ def hapus_konsol(id):
 
 
 # ============================================================================
-# RUTE ENTITAS KEDUA: PACKAGES (PAKET SEWA RENTAL) — LANGKAH 14
+# 2. RUTE ENTITAS KEDUA: PACKAGES (PAKET SEWA RENTAL)
 # ============================================================================
 
 @app.route("/packages")
@@ -242,6 +251,98 @@ def hapus_paket(id):
     else:
         flash(message, "danger")
     return redirect(url_for("daftar_paket"))
+
+
+# ============================================================================
+# 3. RUTE ENTITAS BERELASI: TRANSACTIONS (SESI SEWA KONSOL) — JOBSHEET 10
+# ============================================================================
+
+@app.route("/sewa")
+def daftar_sewa():
+    """
+    Langkah 3 (Siklus 1): Daftar Transaksi Sewa dengan JOIN ke consoles & packages.
+    Langkah 9 & 10: Pencarian (q) dan Penyaringan (status_bayar, jenis_konsol).
+    """
+    query_q = request.args.get("q", "").strip()
+    filter_status = request.args.get("status_bayar", "").strip()
+    filter_jenis = request.args.get("jenis_konsol", "").strip()
+
+    transactions = get_all_transactions(
+        q=query_q,
+        status_bayar=filter_status,
+        jenis_konsol=filter_jenis,
+        db_name=app.config["DATABASE_NAME"],
+    )
+
+    return render_template(
+        "daftar_sewa.html",
+        transactions=transactions,
+        query_q=query_q,
+        filter_status=filter_status,
+        filter_jenis=filter_jenis,
+    )
+
+
+@app.route("/sewa/buka", methods=["GET", "POST"])
+def buka_sewa():
+    """
+    Langkah 4 & 5 (Siklus 2 & 3): Form Tambah dengan Pilihan Induk & Transaksi Atomik Multi-Tabel.
+    """
+    errors = []
+    data = {}
+
+    if request.method == "POST":
+        data = {
+            "nama_pelanggan": request.form.get("nama_pelanggan", ""),
+            "console_id": request.form.get("console_id", ""),
+            "package_id": request.form.get("package_id", ""),
+            "status_bayar": request.form.get("status_bayar", "open_bill"),
+        }
+
+        success, errors, new_trx_id = create_transaction(
+            nama_pelanggan=data["nama_pelanggan"],
+            console_id=data["console_id"],
+            package_id=data["package_id"],
+            status_bayar=data["status_bayar"],
+            user_id=1,  # Kasir aktif default
+            db_name=app.config["DATABASE_NAME"],
+        )
+
+        if success:
+            flash(
+                f"Sesi sewa untuk '{data['nama_pelanggan'].strip()}' berhasil dibuka! Unit konsol kini berstatus TERPAKAI.",
+                "success",
+            )
+            return redirect(url_for("daftar_sewa"))
+
+    available_consoles = get_available_consoles(app.config["DATABASE_NAME"])
+    active_packages = get_active_packages(app.config["DATABASE_NAME"])
+
+    return render_template(
+        "buka_sewa.html",
+        errors=errors,
+        data=data,
+        available_consoles=available_consoles,
+        active_packages=active_packages,
+    )
+
+
+@app.route("/sewa/<int:id>/selesai", methods=["POST"])
+def selesaikan_sewa(id):
+    """
+    Tugas Lanjutan (Langkah 16): Penghentian Sesi Sewa Kasir.
+    Mengubah status transaksi menjadi lunas, konsol menjadi tersedia,
+    dan mencatat denda keterlambatan jika ada.
+    """
+    success, message, status_code = finish_transaction(
+        transaction_id=id,
+        db_name=app.config["DATABASE_NAME"],
+    )
+    if success:
+        flash(message, "success")
+    else:
+        flash(message, "danger")
+    return redirect(url_for("daftar_sewa"))
 
 
 # Penangan Galat 404
