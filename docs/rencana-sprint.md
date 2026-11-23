@@ -5,13 +5,13 @@ Dokumen ini memuat rencana pelaksanaan Sprint 1 sampai Sprint 4 untuk penyusunan
 ---
 
 ## 1. Evaluasi Jurnal Vibe Coding dan Proporsi Keputusan
-Hingga akhir pengerjaan Sesi 1 dan Sesi 2 (implementasi modul CRUD entitas pertama `consoles` dan entitas kedua `packages`), tercatat total **11 entri log** pada `jurnal-vibe-coding.md`:
+Hingga akhir pengerjaan Pertemuan 10 (implementasi modul berelasi `transactions`, transaksi multi-tabel atomik, pencarian & penyaringan, 2 sesi debugging, refactoring, dan penghentian sewa/denda), tercatat total **20 entri log** pada `jurnal-vibe-coding.md`:
 
-| Kategori Keputusan | Jumlah Entri | Persentase | Keterangan Evaluasi |
+| Kategori Keputusan | Jumlah Entri | Persentase | Keterangan Evaluasi Praktik Vibe Coding |
 |:--:|:--:|:--:|---|
-| **Terima** | 11 | 100% | Seluruh keluaran AI diawali prompt dengan batasan spesifik (*prompt engineering* terarah), diverifikasi melalui baris-demi-baris kode, dan diuji menggunakan skrip otomatis unit/skema sebelum disetujui. |
-| **Ubah** | 0 | 0% | Penyesuaian kecil (seperti path impor test dan Jinja2 uppercase escape) langsung diselesaikan dalam siklus debugging terkendali. |
-| **Tolak** | 0 | 0% | Tidak ada usulan pustaka eksternal ilegal atau perusakan skema basis data karena batasan arsitektur telah dikunci sejak awal pada `aturan-proyek.md`. |
+| **Terima** | 20 | 100% | Seluruh hasil generasi kode AI diuji dengan skrip uji regresi otomatis (`tests/uji_cepat.py` & `tests/test_transaksi_berelasi.py`), mematuhi arsitektur 3-tier, serta menerapkan query SQL berparameter dan proteksi XSS Jinja2. |
+| **Ubah** | 0 | 0% | Perbaikan kecil (penyesuaian tipe string ID konsol dan perbaikan typo kolom JOIN `c.kode_konsol`) dituntaskan secara langsung melalui sesi investigasi debugging terpandu (Entri 17, 18, dan 19). |
+| **Tolak** | 0 | 0% | Tidak ada kode AI yang ditolak mentah-mentah karena pengembang konsisten memberikan prompt terarah yang menyertakan potongan `schema.sql` dan batasan `aturan-proyek.md`. |
 
 ---
 
@@ -19,31 +19,34 @@ Hingga akhir pengerjaan Sesi 1 dan Sesi 2 (implementasi modul CRUD entitas perta
 
 Rencana sprint ini diturunkan langsung dari dokumen `docs/product-backlog.md`, PRD, dan SRS sistem Exito Playbox:
 
-### 2.1 Sprint 1 (Minggu 9 – 10): Fondasi Kerangka & Master Data
-- **Fokus Utama:** Pembangunan kerangka kerja aplikasi Flask, inisialisasi basis data SQLite, dan manajemen entitas master independen.
-- **Butir Backlog yang Diselesaikan (Pertemuan 9):**
+### 2.1 Sprint 1 (Minggu 9 – 10): Fondasi Kerangka, Master Data, & Modul Berelasi
+- **Fokus Utama:** Pembangunan kerangka kerja aplikasi Flask, inisialisasi basis data SQLite, manajemen entitas master, serta modul transaksi sewa berelasi.
+- **Butir Backlog yang Diselesaikan (Pertemuan 9 & 10):**
   - [x] Inisialisasi basis data SQLite otomatis dari `docs/desain/schema.sql` (`models.py`).
   - [x] Kerangka kerja Flask 3-tier, kunci rahasia aman, dan templat dasar responsif (`base.html`).
   - [x] Modul CRUD lengkap entitas pertama: Unit Konsol (`consoles`) — F1 s/d F5.
-  - [x] Modul CRUD lengkap entitas kedua: Paket Sewa (`packages`) — Langkah 14.
-  - [x] Rangkaian pengujian unit otomatis (`tests/test_tambah_konsol.py`, `tests/test_crud_konsol.py`, `tests/test_crud_packages.py`).
-- **Target Lanjutan Sprint 1 (Pertemuan 10):**
-  - [ ] Pembuatan modul relasi transaksi sewa (`transactions`) yang menghubungkan unit konsol, kasir, dan paket durasi.
-  - [ ] Implementasi form kasir untuk membuka sesi sewa dan mengubah status konsol menjadi `'terpakai'` secara atomik (**KF-01**).
-  - [ ] Penerapan logika kalkulasi estimasi durasi dan tarif biaya sewa otomatis (**KF-02**).
+  - [x] Modul CRUD lengkap entitas kedua: Paket Sewa (`packages`) — Siklus CRUD terpisah.
+  - [x] Rangkaian pengujian unit otomatis master data (`test_tambah_konsol.py`, `test_crud_konsol.py`, `test_crud_packages.py`).
+  - [x] Modul relasi transaksi sewa (`transactions`) dengan JOIN multi-tabel (`consoles`, `packages`, `users`) — G1.
+  - [x] Form buka sewa kasir dengan pilihan entitas induk dan validasi nilai batas — G2.
+  - [x] Transaksi atomik multi-tabel: pencatatan sewa & perubahan status konsol menjadi `'terpakai'` (**KF-01**) — G3.
+  - [x] Pencarian LIKE berparameter (escape `%`, `_`) dan penyaringan dinamis multi-kriteria (`status_bayar`, `jenis_konsol`) — G4.
+  - [x] Skrip uji regresi otomatis mandiri `tests/uji_cepat.py` (Langkah 12).
+  - [x] Penghentian sesi sewa kasir (`POST /sewa/<id>/selesai`), pengembalian status unit konsol menjadi `'tersedia'`, dan pencatatan denda otomatis ke tabel `fines` (**KF-03**).
 
 ---
 
-### 2.2 Sprint 2 (Minggu 11 – 12): Siklus Transaksi, Timer, dan Denda Overtime
-- **Fokus Utama:** Penyempurnaan siklus hidup sewa, monitoring real-time, dan penanganan kelebihan waktu.
+### 2.2 Sprint 2 (Minggu 11 – 12): Siklus Transaksi, Dasbor Monitoring, dan Timer Real-Time
+- **Fokus Utama:** Penyempurnaan siklus hidup sewa, monitoring ketersediaan konsol secara real-time, dan audit keamanan.
 - **Butir Backlog:**
   - [ ] Dasbor monitoring ketersediaan konsol *real-time* via *HTTP polling* 10 detik (**KF-04**).
-  - [ ] Modul penghentian timer sewa dan kalkulasi otomatis denda keterlambatan dengan aturan toleransi *grace period* 5 menit (**KF-03**).
-  - [ ] Fitur penyaringan (*filtering*) daftar unit konsol berdasarkan jenis PlayStation (**KF-05**).
+  - [ ] Visualisasi timer mundur (*countdown timer*) sesi sewa berjalan di antarmuka kasir.
   - [ ] Fitur pembatalan sewa darurat (kasus mati lampu / kendala teknis $< 5$ menit pertama).
+  - [ ] Ekspor rekapitulasi sesi sewa harian ke format CSV / cetak nota struk kasir.
 - 🚩 **TARGET CHECKPOINT MINGGU 12:**
   - Audit Keamanan Menyeluruh: Pengujian injeksi SQL lanjutan, pengujian penetrasi CSRF/XSS, dan pembatasan otentikasi peran kasir vs owner.
   - *Peer Code Review* lintas kelompok terhadap seluruh perubahan kode Sprint 1 dan Sprint 2.
+  - Presentasi demo integrasi Sprint 1 dan Sprint 2 di hadapan dosen pengampu.
 
 ---
 
@@ -67,12 +70,13 @@ Rencana sprint ini diturunkan langsung dari dokumen `docs/product-backlog.md`, P
 
 ---
 
-## 3. Pembagian Tugas untuk Pertemuan 10 (Minggu Depan)
+## 3. Evaluasi Capaian Pertemuan 10 & Rencana Pertemuan 11
 
-Pada Pertemuan 10, pekerjaan difokuskan pada penyelesaian separuh kedua Sprint 1 (Relasi Transaksi Sewa & Logika Billing):
+Seluruh penugasan Pertemuan 10 (Sprint 1 Fase 2) telah selesai 100%:
 
-| No | Modul / Fitur | Deskripsi Pekerjaan | Kebutuhan Terkait | Penanggung Jawab |
-|:--:|---|---|:--:|---|
-| **1** | **Model & Service Transaksi (`transactions`)** | Membuat fungsi `create_transaction()` pada `services.py` yang memvalidasi `console_id` berstatus `'tersedia'`, mengikat `package_id`, mencatat waktu mulai, dan mengubah status konsol menjadi `'terpakai'` dalam satu transaksi basis data (*atomic transaction*). | **KF-01, KF-02** | Maruf Syahbana |
-| **2** | **Antarmuka Form Buka Sewa** | Membangun rute `/sewa/buka` dan templat `buka_sewa.html` sesuai wireframe `wf-03`, memuat input nama pelanggan dan dropdown dinamis paket sewa yang tersaring menurut tipe konsol terpilih. | **KF-01, KF-08** | Maruf Syahbana |
-| **3** | **Skrip Uji Otomatis Sesi Sewa** | Menyusun berkas `tests/test_transaksi_sewa.py` untuk menguji penolakan sewa pada konsol yang sedang terpakai, validasi nama kosong, dan verifikasi perhitungan waktu selesai. | **KF-01, KF-02** | Maruf Syahbana |
+| No | Modul / Fitur | Status Capaian | Bukti Pengujian | Penanggung Jawab |
+|:--:|---|:--:|---|:--:|
+| **1** | **Model & Service Transaksi (`transactions`)** | **Selesai (100%)** | `tests/test_transaksi_berelasi.py` (Atomisitas & JOIN) | Maruf Syahbana |
+| **2** | **Antarmuka Form Buka Sewa & Daftar Sewa** | **Selesai (100%)** | `templates/daftar_sewa.html` & `templates/buka_sewa.html` | Maruf Syahbana |
+| **3** | **Skrip Uji Cepat Regresi (`uji_cepat.py`)** | **Selesai (100%)** | Menghasilkan output `"SEMUA UJI LULUS"` | Maruf Syahbana |
+| **4** | **Fitur Penghentian Sewa & Denda (`fines`)** | **Selesai (100%)** | Verifikasi tabel `fines` dan status unit kembali `'tersedia'` | Maruf Syahbana |
