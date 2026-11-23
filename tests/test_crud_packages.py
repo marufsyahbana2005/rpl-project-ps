@@ -24,6 +24,12 @@ init_db(TEST_DB)
 app.config["DATABASE_NAME"] = TEST_DB
 client = app.test_client()
 
+# Inisialisasi sesi login peran owner (Langkah 12)
+with client.session_transaction() as sess:
+    sess["user_id"] = 1
+    sess["username"] = "owner_test"
+    sess["role"] = "owner"
+
 print("--- MENJALANKAN UJI CRUD PACKAGES (ENTITAS KEDUA) ---")
 
 # 1. UJI TAMBAH PAKET VALID

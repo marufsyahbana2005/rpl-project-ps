@@ -34,6 +34,12 @@ conn.execute(
 conn.commit()
 conn.close()
 
+# Inisialisasi sesi login peran owner (Langkah 12)
+with client.session_transaction() as sess:
+    sess["user_id"] = 1
+    sess["username"] = "owner_test"
+    sess["role"] = "owner"
+
 print("--- MENJALANKAN PENGUJIAN SIKLUS 4 & 5 ---")
 
 # 1. UJI F4: Ubah data berhasil

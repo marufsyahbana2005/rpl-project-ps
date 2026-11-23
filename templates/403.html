@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Akses Ditolak (403) — Exito Playbox{% endblock %}
+
+{% block content %}
+<div style="max-width: 520px; margin: 4rem auto; text-align: center;">
+    <div class="card" style="padding: 3rem 2rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🚫</div>
+        <h1 style="font-size: 1.75rem; font-weight: 700; color: var(--danger-color, #ef4444); margin-bottom: 0.5rem;">
+            403 — Akses Ditolak
+        </h1>
+        <p style="font-size: 1rem; color: var(--text-main); margin-bottom: 1rem; font-weight: 500;">
+            {{ message|default("Anda tidak memiliki izin otorisasi untuk mengakses halaman atau menjalankan aksi ini.") }}
+        </p>
+        <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 2rem;">
+            Halaman ini khusus diperuntukkan bagi peran pengguna tertentu. Jika Anda merasa ini adalah kekeliruan, silakan hubungi pemilik rental atau masuk dengan akun yang sesuai.
+        </p>
+
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <a href="{{ url_for('daftar_sewa') }}" class="btn btn-primary" style="padding: 0.6rem 1.25rem;">
+                Kembali ke Beranda
+            </a>
+            {% if session.get('user_id') %}
+                <form action="{{ url_for('logout') }}" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-outline-danger" style="padding: 0.6rem 1.25rem;">
+                        Ganti Akun
+                    </button>
+                </form>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-outline-primary" style="padding: 0.6rem 1.25rem;">
+                    Masuk ke Sistem
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
