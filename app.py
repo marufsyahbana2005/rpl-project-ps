@@ -47,8 +47,17 @@ logger = logging.getLogger("exito_playbox_security")
 # Inisialisasi Aplikasi Flask
 app = Flask(__name__)
 
-# Konfigurasi Kunci Rahasia dan Pengerasan Lingkungan Produksi (Langkah 13)
-is_production = os.environ.get("FLASK_ENV") == "production"
+# Konfigurasi Nomor Versi Aplikasi (Jobsheet 14 / Langkah 3)
+try:
+    from versi import __version__
+except ImportError:
+    __version__ = "1.0.0"
+
+# Konfigurasi Kunci Rahasia dan Pengerasan Lingkungan Produksi (Jobsheet 12 & 14)
+is_production = (
+    os.environ.get("APP_ENV") == "production"
+    or os.environ.get("FLASK_ENV") == "production"
+)
 secret_key_env = os.environ.get("SECRET_KEY")
 
 if is_production and not secret_key_env:
@@ -59,12 +68,26 @@ if is_production and not secret_key_env:
 app.config["SECRET_KEY"] = (
     secret_key_env or "exito-playbox-dev-secret-key-2026-rentalsecure"
 )
-app.config["DATABASE_NAME"] = os.environ.get("DATABASE_NAME", "rental.db")
+app.config["DATABASE_NAME"] = os.environ.get(
+    "TOKO_DB", os.environ.get("DATABASE_NAME", "rental.db")
+)
 
-# Konfigurasi Atribut Keamanan Cookie Sesi (Langkah 13 / OWASP A05)
+# Konfigurasi Atribut Keamanan Cookie Sesi (Langkah 13 & Langkah 5 / OWASP A05)
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-app.config["SESSION_COOKIE_SECURE"] = is_production
+
+# Dukungan penyesuaian COOKIE_SECURE untuk jaringan toko lokal tanpa HTTPS
+cookie_secure_cfg = os.environ.get("COOKIE_SECURE")
+if cookie_secure_cfg is not None:
+    app.config["SESSION_COOKIE_SECURE"] = cookie_secure_cfg in ("1", "true", "True")
+else:
+    app.config["SESSION_COOKIE_SECURE"] = is_production
+
+
+@app.context_processor
+def inject_app_version():
+    """Menyediakan variabel app_version ke seluruh templat Jinja2."""
+    return {"app_version": __version__}
 
 
 # ============================================================================
