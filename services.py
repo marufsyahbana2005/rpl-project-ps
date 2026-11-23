@@ -126,6 +126,9 @@ def update_console(console_id, kode_konsol, jenis_konsol, status, db_name=None):
         if not current:
             return False, ["Unit konsol tidak ditemukan di dalam sistem."], 404
 
+        if current["status"] == "terpakai":
+            return False, ["Unit konsol sedang dalam sesi sewa aktif dan statusnya tidak dapat diubah secara manual."], 400
+
         if not kode_clean:
             errors.append("Kode konsol wajib diisi.")
         elif len(kode_clean) < 4:
